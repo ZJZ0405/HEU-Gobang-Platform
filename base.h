@@ -10,7 +10,7 @@ typedef enum
     BLACK = 1, // 黑棋
     WHITE = 2, // 白棋
     EMPTY = 0  // 空
-} Color;
+} Type;
 
 /**
  * @brief 棋子位置
@@ -22,7 +22,7 @@ typedef struct
 {
     int x;
     int y;
-    Color color;
+    Type type;
 } Chess;
 
 /**
@@ -53,7 +53,7 @@ typedef enum
  * @brief 封装函数
  * @version 0.1.0
  */
-void ProcessNext(int **board, Color self_color, Chess *in, Chess *out); // bw为己方颜色
+void ProcessNext(const int board[15][15], Type self_color, Chess *in, Chess *out); // bw为己方颜色
 
 /**
  * @brief 读取棋盘中数据
@@ -62,7 +62,7 @@ void ProcessNext(int **board, Color self_color, Chess *in, Chess *out); // bw为
  * @param y
  * @return 值
  */
-int readBoard(int board[][15], int x, int y);
+int readBoard(const int board[15][15], const int x, const int y);
 
 /**
  * @brief 评估当前全局分数
@@ -70,7 +70,7 @@ int readBoard(int board[][15], int x, int y);
  * @param bw 己方棋子颜色
  * @return 评估得分
  */
-int evaluateGobalScore(int board[][15], Color self_color);
+int evaluateGobalScore(const int board[15][15], const Type self_type);
 
 /**
  * @brief 评估当前单步分数
@@ -79,4 +79,4 @@ int evaluateGobalScore(int board[][15], Color self_color);
  * @param in 新加入的步骤
  * @return 评估得分
  */
-int evaluateScore(int board[][15], int bw, Chess *in, int old_score);
+int evaluateScore(const int board[15][15], const Type self_type, const Chess *in);
