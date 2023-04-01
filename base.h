@@ -39,15 +39,15 @@ typedef struct
  */
 typedef enum
 {
-    CON_FIVE = 100000,
-    ACTIVE_FOUR = 10000,
-    ACTIVE_THREE = 1000,
-    ACTIVE_TWO = 100,
-    ACTIVE_ONE = 10,
+    CON_FIVE,
+    ACTIVE_FOUR,
+    ACTIVE_THREE,
+    ACTIVE_TWO,
+    ACTIVE_ONE,
 
-    INACTIVE_FOUR = 1000,
-    INACTIVE_THREE = 100,
-    INACTIVE_TWO = 10
+    INACTIVE_FOUR,
+    INACTIVE_THREE,
+    INACTIVE_TWO
 } Grade;
 
 /**
@@ -96,12 +96,21 @@ Type readBoard(const int board[15][15], const int x, const int y);
 /**
  * @brief 判断连子类型
  * @param length 长度
- * @param type 棋子类型
  * @param first_status 开始是否阻塞
  * @param end_status 结束是否阻塞
  * @return 连子类型
 */
-Grade judgeStatus(int length, Type type, bool first_status, bool end_status);
+Grade judgeStatus(int length, bool first_status, bool end_status);
+
+/**
+ * @brief 计算单元
+ * @param array[] 一维数组
+ * @param array_lenght 数组长度
+ * @param self_type 己方种类
+ * @param self 己方分数类型记分
+ * @param enemy 敌方分数类型记分
+*/
+void countUnit(const int array[], const int array_lenght, const Type self_type, Count *self, Count *enemy);
 
 /**
  * @brief 评估当前全局分数
