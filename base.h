@@ -77,7 +77,7 @@ typedef struct
 /**
  * @brief 封装函数
  * @version 0.1.0
- * @param board 棋盘
+ * @param board[15][15] 棋盘
  * @param self_type 己方颜色
  * @param in 当前敌方落子位置
  * @param out 己方落子位置
@@ -86,7 +86,7 @@ void ProcessNext(const int board[15][15], Type self_type, Chess *in, Chess *out)
 
 /**
  * @brief 读取棋盘中数据
- * @param board[][15] 棋盘
+ * @param board[15][15] 棋盘
  * @param x
  * @param y
  * @return 该坐标下棋盘上棋子的类型
@@ -105,7 +105,7 @@ Grade judgeStatus(int length, Type type, bool first_status, bool end_status);
 
 /**
  * @brief 评估当前全局分数
- * @param board 当前棋盘
+ * @param board[15][15] 当前棋盘
  * @param self_type 己方棋子颜色
  * @return 评估得分
  */
@@ -113,7 +113,7 @@ int evaluateGobalScore(const int board[15][15], const Type self_type);
 
 /**
  * @brief 评估当前单步分数
- * @param board 当前棋盘
+ * @param board[15][15] 当前棋盘
  * @param self_type 己方棋子颜色
  * @param in 新加入的步骤
  * @return 评估得分
