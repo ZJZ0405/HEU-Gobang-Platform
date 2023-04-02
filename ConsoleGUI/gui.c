@@ -7,35 +7,12 @@
 #include <stdbool.h>
 #include <fcntl.h>
 #include <io.h>
+#include <time.h>
 
-const wchar_t *logo = L"                            +3666!.                     \n\
-                     v66  1666666668o  66-              \n\
-                 .3v.66oi666666o 666666666 38           \n\
-              .6zv66666-6666666;636668.n36666 68        \n\
-            .6 866666686.8868 666666v.3-u666666%;6      \n\
-           3z866i..n666i66866666666666.16666666 6v6+    \n\
-          6 66666v*666663!^33~~o~o86.8666.6!.-66668 6   \n\
-         6.66 66666666.6~~;;*******;;~;63666z6666666 8  \n\
-        6 6666 ; i66.8~;**^^+++++++^^*;;~866666 8  .6 6 \n\
-       3 6666n 8866zo;**^+-.      -.-+^*;~o.638. i6666~+\n\
-       6!666688666*~;*^+-. noooooooz..-+^*~~ 666666666 6\n\
-      ~o6666666661!;*^-.  #--....--.3  .+^*;68666666@883\n\
-      6 6+n~    +oo-...+o~.#i6^&$8 .n*....~n-. --o~..#6n\n\
-      6 6v#!..- ;&%+...~#6-#i.......#i.- .!#o ..~#3- #6v\n\
-      ^o6         .       ..8&3..~+ .                #86\n\
-       6z66666n666.o;*^+-.           .-+^;~z-666666666 6\n\
-       ! 666;38-666.~~;*^+-# ;#.# -#-+^*;~1 666a666666u-\n\
-        6 666!-6.666i6~;;*^^++++++^^^*;;o666663.68666 6 \n\
-         6 66666.6866636o~~;;*****;;~~1v8666o83; 666 6  \n\
-          6 36668v66666666 363ava66a-6666666z666666 6   \n\
-           a6i66666. 666666666666666666in.u8!6666.6.    \n\
-            .8^6666836668638 8u1i36!6z631nu6666*!8      \n\
-               86 366668.*-16i8z!..o186666666 81        \n\
-                  68 86666666666666666666! 66           \n\
-                      66~  u6666666v  u66               ";
+const wchar_t logo[25][51] = {L"                      +3666!.                     ", L"               v66  1666666668o  66-              ", L"           .3v.66oi666666o 666666666 38           ", L"        .6zv66666-6666666;636668.n36666 68        ", L"      .6 866666686.8868 666666v.3-u666666%;6      ", L"     3z866i..n666i66866666666666.16666666 6v6+    ", L"    6 66666v*666663!^33~~o~o86.8666.6!.-66668 6   ", L"   6.66 66666666.6~~;;*******;;~;63666z6666666 8  ", L"  6 6666 ; i66.8~;**^^+++++++^^*;;~866666 8  .6 6 ", L" 3 6666n 8866zo;**^+-.      -.-+^*;~o.638. i6666~+", L" 6!666688666*~;*^+-. noooooooz..-+^*~~ 666666666 6", L"~o6666666661!;*^-.  #--....--.3  .+^*;68666666@883", L"6 6+n~    +oo-...+o~.#i6^&$8 .n*....~n-. --o~..#6n", L"6 6v#!..- ;&%+...~#6-#i.......#i.- .!#o ..~#3- #6v", L"^o6         .       ..8&3..~+ .                #86", L" 6z66666n666.o;*^+-.           .-+^;~z-666666666 6", L" ! 666;38-666.~~;*^+-# ;#.# -#-+^*;~1 666a666666u-", L"  6 666!-6.666i6~;;*^^++++++^^^*;;o666663.68666 6 ", L"   6 66666.6866636o~~;;*****;;~~1v8666o83; 666 6  ", L"    6 36668v66666666 363ava66a-6666666z666666 6   ", L"     a6i66666. 666666666666666666in.u8!6666.6.    ", L"      .8^6666836668638 8u1i36!6z631nu6666*!8      ", L"         86 366668.*-16i8z!..o186666666 81        ", L"            68 86666666666666666666! 66           ", L"                66~  u6666666v  u66               "};
 
 int chessZoomRate;
-int chessBoardX, chessBoardY;
+int chessBoardX, chessBoardY, battlePanelX, battlePanelY;
 int surrenderX, surrenderY, surrenderWidth, surrenderHeight;
 // 是否可以悔棋
 bool canRegret = false;
@@ -286,7 +263,7 @@ void UpdateChessBoard(int **newboard, int newX, int newY)
         }
     }
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hOut, BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE);
+    SetConsoleTextAttribute(hOut, BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
     DrawChess(chessBoardX + (newX)*2 * chessZoomRate, chessBoardY + (newY)*chessZoomRate, newboard[newY][newX]);
     SetConsoleTextAttribute(hOut, NULL);
 }
@@ -398,6 +375,8 @@ void ClearScreen()
 void DrawBattlePanel(int highLightPlayer)
 { // 在左侧生成一个带边框的窗口，显示玩家信息,边框使用lt,bt等字符，边框使用defaultColor，文字使用纯白
     int x = 0, y = 0;
+    battlePanelX = x;
+    battlePanelY = y;
     int width = bufferSize.X * 0.25, height = bufferSize.Y;
     Console_Print_Prefix(L"╔", defaultColor, x, y);
     for (int i = 0; i < width - 2; i++)
@@ -419,10 +398,10 @@ void DrawBattlePanel(int highLightPlayer)
     {
         Console_Print_Prefix(L"║", defaultColor, x + width - 1, y + 1 + i);
     }
-    Console_Print_Prefix(L"玩家1", defaultColor, x + 1, y + 1);
-    Console_Print_Prefix(L"玩家2", defaultColor, x + 1, y + 3);
-    Console_Print_Prefix(player1, highLightPlayer == 1 ? (struct Color){240, 200, 183} : defaultColor, x + 1, y + 2);
-    Console_Print_Prefix(player2, highLightPlayer == 2 ? (struct Color){240, 200, 183} : defaultColor, x + 1, y + 4);
+    Console_Print_Prefix(L"白子玩家", defaultColor, x + 2, y + 1);
+    Console_Print_Prefix(L"黑子玩家", defaultColor, x + 2, y + 4);
+    Console_Print_Prefix(player1, highLightPlayer == 1 ? (struct Color){240, 200, 183} : defaultColor, x + 2, y + 2);
+    Console_Print_Prefix(player2, highLightPlayer == 2 ? (struct Color){240, 200, 183} : defaultColor, x + 2, y + 5);
     // 绘制认输与悔棋按钮，位于玩家信息窗口内，按钮至少三格高，十二格宽，水平居中，按钮内文字也水平居中
     int buttonWidth = 12, buttonHeight = 3;
     int buttonX = (width - buttonWidth) / 2 + x, buttonY = (height - buttonHeight) / 2 + y;
@@ -483,6 +462,12 @@ void DrawBattlePanel(int highLightPlayer)
     regretWidth = buttonWidth;
     // 写入regretHeight
     regretHeight = buttonHeight;
+}
+
+void UpdateBattlePanel(int highLightPlayer)
+{
+    Console_Print_Prefix(player1, highLightPlayer == 1 ? (struct Color){240, 200, 183} : defaultColor, battlePanelX + 2, battlePanelY + 2);
+    Console_Print_Prefix(player2, highLightPlayer == 2 ? (struct Color){240, 200, 183} : defaultColor, battlePanelX + 2, battlePanelY + 5);
 }
 /**
  * @brief 绘制标题
@@ -739,7 +724,7 @@ void GetMouseInput(int **board, bool *stopflag)
         }
         nbw = nbw == 1 ? 2 : 1;
         // 让正在下棋的一方的名字高亮显示，即将下棋的一方的名字变为红色
-        DrawBattlePanel(nbw);
+        UpdateBattlePanel(nbw);
     }
 }
 /**
@@ -762,20 +747,20 @@ void DrawDialog(int x, int y, int width, int height)
         Console_Print_Prefix(L"═", defaultColor, x + i, y);
         Console_Print_Prefix(L"═", defaultColor, x + i, y + height - 1);
     }
-    for (int i = 1; i < height - 1; i++)
-    {
-        Console_Print_Prefix(L"║", defaultColor, x, y + i);
-        Console_Print_Prefix(L"║", defaultColor, x + width - 1, y + i);
-    }
     // 用黑色填充
     for (int i = 1; i < height - 1; i++)
     {
-        wchar_t *str = (wchar_t *)malloc(sizeof(wchar_t) * (width - 1));
+        wchar_t *str = (wchar_t *)calloc(sizeof(wchar_t), width);
         for (int j = 1; j < width - 1; j++)
         {
             str[j - 1] = L' ';
         }
         Console_Print_Prefix(str, defaultColor, x + 1, y + i);
+    }
+    for (int i = 1; i < height - 1; i++)
+    {
+        Console_Print_Prefix(L"║", defaultColor, x, y + i);
+        Console_Print_Prefix(L"║", defaultColor, x + width - 1, y + i);
     }
 }
 /**
@@ -807,10 +792,14 @@ int GetFirst()
     int y = bufferSize.Y * 0.25;
     int width = bufferSize.X * 0.5;
     int height = bufferSize.Y * 0.5;
+    char tplayer1[20];
+    char tplayer2[20];
     DrawDialog(x, y, width, height);
+    wcstombs(tplayer1, player1, 20);
+    wcstombs(tplayer2, player2, 20);
     Console_Print_Prefix(L"请选择先手方：", defaultColor, x + width / 2 - 6, y + height / 2 - 2);
-    Console_Print_Prefix(player1, defaultColor, x + width / 2 - wcslen(player1), y + height / 2 - 1);
-    Console_Print_Prefix(player2, defaultColor, x + width / 2 - wcslen(player2), y + height / 2);
+    Console_Print_Prefix(player1, defaultColor, x + (width - strlen(tplayer1)) / 2, y + height / 2 - 1);
+    Console_Print_Prefix(player2, defaultColor, x + (width - strlen(tplayer2)) / 2, y + height / 2);
     INPUT_RECORD inRec;
     DWORD res;
     HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE); /* 获取标准输入设备句柄*/
@@ -877,10 +866,15 @@ void GetPlayerName(wchar_t *player)
     int height = bufferSize.Y * 0.5;
     DrawDialog(x, y, width, height);
     Console_Print_Prefix(L"请输入玩家", defaultColor, x + width / 2 - 6, y + height / 2 - 2);
+    // 打印下划线
+    for (int i = 0; i < 20; i++)
+    {
+        Console_Print_Prefix(L"_", defaultColor, x + width / 2 - 10 + i, y + height / 2 - 1);
+    }
     // 将光标移动到输入框中
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord;
-    coord.X = x + width / 2 - 6;
+    coord.X = x + width / 2 - 10;
     coord.Y = y + height / 2 - 1;
     SetConsoleCursorPosition(hOut, coord);
     // 接收玩家输入的名字
@@ -888,11 +882,119 @@ void GetPlayerName(wchar_t *player)
     // 将玩家输入的名字赋值给player
 }
 
+wchar_t **firstname;
+wchar_t **lastname;
+int firstcount, lastcount;
+
+void ReadNameFile()
+{
+    firstname = (wchar_t **)malloc(sizeof(wchar_t *) * 2000);
+    lastname = (wchar_t **)malloc(sizeof(wchar_t *) * 2000);
+    // 读取first.names，以utf-8文本模式打开并分行写入firstname数组
+    FILE *fp;
+    fp = fopen("first.names", "r");
+    if (fp == NULL)
+    {
+        printf("Error opening file");
+        exit(1);
+    }
+    int i = 0;
+    char line[100];
+    while (fgets(line, 100, fp) != NULL)
+    {
+        firstname[i] = (wchar_t *)malloc(sizeof(wchar_t) * 100);
+        mbstowcs(firstname[i], line, 100);
+        i++;
+    }
+    firstcount = i;
+    fclose(fp);
+    // 读取last.names，以utf-8文本模式打开并分行写入lastname数组
+    fp = fopen("last.names", "r");
+    if (fp == NULL)
+    {
+        printf("Error opening file");
+        exit(1);
+    }
+    i = 0;
+    while (fgets(line, 100, fp) != NULL)
+    {
+        lastname[i] = (wchar_t *)malloc(sizeof(wchar_t) * 100);
+        mbstowcs(lastname[i], line, 100);
+        i++;
+    }
+    lastcount = i;
+    fclose(fp);
+}
+
 void Print_Logo()
 {
-    Console_Print_Prefix(logo, (struct Color){255, 255, 255}, 0, (bufferSize.Y - 24) / 2);
-    Console_Print_Prefix(L"Welcome to HEU Gobang Platform!", defaultColor, 54 + (bufferSize.X - 54 - 30) / 2, bufferSize.Y / 2 - 2);
-    Console_Print_Prefix(L"点击左键继续", defaultColor, 54 + (bufferSize.X - 54 - 12) / 2, bufferSize.Y / 2 + 2);
+    DrawBoardLine();
+    for (int i = 0; i < 25; i++)
+    {
+        Console_Print_Prefix(logo[i], (struct Color){255, 255, 255}, bufferSize.X * 0.1, (bufferSize.Y - 24) / 2 + i);
+    }
+    Console_Print_Prefix(L"Welcome to HEU Gobang Platform!", defaultColor, 54 + (bufferSize.X - 54 - 30) / 2, bufferSize.Y / 2 - 8);
+    // Console_Print_Prefix(L"点击左键继续", defaultColor, 54 + (bufferSize.X - 54 - 12) / 2, bufferSize.Y / 2 + 2);
+    // 在欢迎语下方分别绘制热座模式、人机对战、退出游戏三个按钮，使用制表符分别绘制边框。位于玩家信息窗口内，每个按钮至少三格高，十二格宽，与欢迎语中心对齐，按钮内文字也水平居中
+    Console_Print_Prefix(L"热座模式", defaultColor, 54 + (bufferSize.X - 54 - 8) / 2, bufferSize.Y / 2);
+    Console_Print_Prefix(L"人机对战", defaultColor, 54 + (bufferSize.X - 54 - 8) / 2, bufferSize.Y / 2 + 4);
+    Console_Print_Prefix(L"退出游戏", defaultColor, 54 + (bufferSize.X - 54 - 8) / 2, bufferSize.Y / 2 + 8);
+    // 等待鼠标点击
+    INPUT_RECORD inRec;
+    DWORD res;
+    HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE); /* 获取标准输入设备句柄*/
+LABEL1:
+    do
+    {
+        ReadConsoleInputW(hInput, &inRec, 1, &res);
+    } while (inRec.Event.MouseEvent.dwButtonState != FROM_LEFT_1ST_BUTTON_PRESSED);
+    COORD coordScreen;
+    coordScreen = inRec.Event.MouseEvent.dwMousePosition;
+    int x1 = coordScreen.X;
+    int y1 = coordScreen.Y;
+    if (x1 >= 54 + (bufferSize.X - 54 - 12) / 2 && x1 <= 54 + (bufferSize.X - 54 - 12) / 2 + 12 && y1 == bufferSize.Y / 2)
+    {
+        ClearScreen();
+        DrawBoardLine();
+        GetPlayerName(player1);
+        GetPlayerName(player2);
+        // 热座模式
+        Game_Start();
+        // 输入玩家信息
+    }
+    else if (x1 >= 54 + (bufferSize.X - 54 - 12) / 2 && x1 <= 54 + (bufferSize.X - 54 - 12) / 2 + 12 && y1 == bufferSize.Y / 2 + 4)
+    {
+        ClearScreen();
+        DrawBoardLine();
+        GetPlayerName(player1);
+        // 随机生成人名
+        srand((unsigned)time(NULL));
+        int first = rand() % firstcount;
+        int last = rand() % lastcount;
+        wcscpy(player2, firstname[first]);
+        wcscat(player2, lastname[last]);
+        // 遍历人名，将其中的换行符去掉
+        for (int i = 0; i < wcslen(player2); i++)
+        {
+            if (player2[i] == L'\n')
+            {
+                player2[i] = L'·';
+                break;
+            }
+        }
+        // 人机对战
+        Game_Start();
+    }
+    else if (x1 >= 54 + (bufferSize.X - 54 - 12) / 2 && x1 <= 54 + (bufferSize.X - 54 - 12) / 2 + 12 && y1 == bufferSize.Y / 2 + 8)
+    {
+        // 退出游戏
+        exit(0);
+    }
+    else
+    {
+        // 重新获取鼠标输入
+        goto LABEL1;
+    }
 }
 
 void MapColorTable()
@@ -901,8 +1003,8 @@ void MapColorTable()
     csbiex.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     GetConsoleScreenBufferInfoEx(hOut, &csbiex);
-    csbiex.ColorTable[0] = RGB(41, 97, 136); // 替代黑色
-    csbiex.ColorTable[1] = RGB(240,200,183); //替代白色，落子强调色
+    csbiex.ColorTable[0] = RGB(41, 97, 136);   // 替代黑色
+    csbiex.ColorTable[1] = RGB(240, 200, 183); // 替代白色，落子强调色
     SetConsoleScreenBufferInfoEx(hOut, &csbiex);
 }
 
@@ -922,16 +1024,18 @@ void WaitLeftClick()
 int main()
 {
     Initialize_Console();
+    ReadNameFile();
     MapColorTable();
     full_screen();
     ClearScreen();
-    Print_Logo();
-    DrawBoardLine();
-    WaitLeftClick();
     player1 = (wchar_t *)malloc(sizeof(wchar_t) * 20);
     player2 = (wchar_t *)malloc(sizeof(wchar_t) * 20);
-    DrawBoardLine();
-    GetPlayerName(player1);
-    GetPlayerName(player2);
+    Print_Logo();
+    // DrawBoardLine();
+    // WaitLeftClick();
+
+    // DrawBoardLine();
+    // GetPlayerName(player1);
+    // GetPlayerName(player2);
     Game_Start();
 }
