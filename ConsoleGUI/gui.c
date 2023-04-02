@@ -43,7 +43,7 @@ bool canRegret = false;
 // 添加悔棋功能的全局变量
 int regretX, regretY, regretWidth, regretHeight;
 // 上一步棋的全局变量
-int lastX, lastY;
+int lastX = -1, lastY = -1;
 
 wchar_t *player1;
 wchar_t *player2;
@@ -69,7 +69,7 @@ struct Color
     int b;
 };
 
-struct Color start = {0xfc, 0x35, 0x4c}, end = {0xa, 0xbf, 0xbc}, defaultColor = {255, 233, 92}; // 渐变色起始颜色，结束颜色，输出默认颜色
+struct Color start = {238, 121, 89}, end = {177, 213, 200}, defaultColor = {255, 238, 111}; // 渐变色起始颜色，结束颜色，输出默认颜色
 /**
  * @brief Create a Color Array object
  *
@@ -269,6 +269,27 @@ void DrawChessBoard(int x, int y, int x1, int y1, int **board) // x,y,x1,y1为�
         }
     }
 }
+
+void UpdateChessBoard(int **newboard, int newX, int newY)
+{
+    // 画所有棋子
+    for (int i = 14; i > -1; i--)
+    {
+        for (int j = 14; j > -1; j--)
+        {
+            if (!((i == lastY || j == lastX) || (i == newY || j == newX)))
+                continue;
+            if (newboard[i][j] != 0)
+            {
+                DrawChess(chessBoardX + (j)*2 * chessZoomRate, chessBoardY + (i)*chessZoomRate, newboard[i][j]);
+            }
+        }
+    }
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hOut, BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE);
+    DrawChess(chessBoardX + (newX)*2 * chessZoomRate, chessBoardY + (newY)*chessZoomRate, newboard[newY][newX]);
+    SetConsoleTextAttribute(hOut, NULL);
+}
 /**
  * @brief 全屏显示控制台窗口
  *
@@ -400,8 +421,8 @@ void DrawBattlePanel(int highLightPlayer)
     }
     Console_Print_Prefix(L"玩家1", defaultColor, x + 1, y + 1);
     Console_Print_Prefix(L"玩家2", defaultColor, x + 1, y + 3);
-    Console_Print_Prefix(player1, highLightPlayer == 1 ? (struct Color){238, 63, 77} : defaultColor, x + 1, y + 2);
-    Console_Print_Prefix(player2, highLightPlayer == 2 ? (struct Color){238, 63, 77} : defaultColor, x + 1, y + 4);
+    Console_Print_Prefix(player1, highLightPlayer == 1 ? (struct Color){240, 200, 183} : defaultColor, x + 1, y + 2);
+    Console_Print_Prefix(player2, highLightPlayer == 2 ? (struct Color){240, 200, 183} : defaultColor, x + 1, y + 4);
     // 绘制认输与悔棋按钮，位于玩家信息窗口内，按钮至少三格高，十二格宽，水平居中，按钮内文字也水平居中
     int buttonWidth = 12, buttonHeight = 3;
     int buttonX = (width - buttonWidth) / 2 + x, buttonY = (height - buttonHeight) / 2 + y;
@@ -697,19 +718,20 @@ void GetMouseInput(int **board, bool *stopflag)
         if (board[y][x] != 0)
             return;
         board[y][x] = nbw;
+        canRegret = true;
+        /*    for (int i = 0; i < 15; i++)
+           {
+               for (int j = 0; j < 15; j++)
+               {
+                   if (board[i][j] != 0)
+                   {
+                       DrawChess(chessBoardX + (j)*2 * chessZoomRate, chessBoardY + (i)*chessZoomRate, board[i][j]);
+                   }
+               }
+           } */
+        UpdateChessBoard(board, x, y);
         lastX = x;
         lastY = y;
-        canRegret = true;
-        for (int i = 0; i < 15; i++)
-        {
-            for (int j = 0; j < 15; j++)
-            {
-                if (board[i][j] != 0)
-                {
-                    DrawChess(chessBoardX + (j)*2 * chessZoomRate, chessBoardY + (i)*chessZoomRate, board[i][j]);
-                }
-            }
-        }
         if (CheckWin(board))
         {
             *stopflag = true;
@@ -825,6 +847,8 @@ LABEL1:
 void Game_Start()
 {
     ClearScreen();
+    lastX = -1;
+    lastY = -1;
     // Console_Print(L"Welcome to HEU Gobang Platform!\n", defaultColor);
     int **board = (int **)calloc(sizeof(int *), 15);
     for (int i = 0; i < 15; i++)
@@ -866,7 +890,7 @@ void GetPlayerName(wchar_t *player)
 
 void Print_Logo()
 {
-    Console_Print_Prefix(logo, (struct Color){18, 107, 174}, 0, (bufferSize.Y - 24) / 2);
+    Console_Print_Prefix(logo, (struct Color){255, 255, 255}, 0, (bufferSize.Y - 24) / 2);
     Console_Print_Prefix(L"Welcome to HEU Gobang Platform!", defaultColor, 54 + (bufferSize.X - 54 - 30) / 2, bufferSize.Y / 2 - 2);
     Console_Print_Prefix(L"点击左键继续", defaultColor, 54 + (bufferSize.X - 54 - 12) / 2, bufferSize.Y / 2 + 2);
 }
@@ -877,7 +901,8 @@ void MapColorTable()
     csbiex.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     GetConsoleScreenBufferInfoEx(hOut, &csbiex);
-    csbiex.ColorTable[0] = RGB(83, 60, 27); // 替代黑色
+    csbiex.ColorTable[0] = RGB(41, 97, 136); // 替代黑色
+    csbiex.ColorTable[1] = RGB(240,200,183); //替代白色，落子强调色
     SetConsoleScreenBufferInfoEx(hOut, &csbiex);
 }
 
