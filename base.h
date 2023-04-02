@@ -128,3 +128,11 @@ int evaluateGobalScore(const int board[15][15], const Type self_type);
  * @return 评估得分
  */
 int evaluateScore(const int board[15][15], const Type self_type, const Chess *in);
+
+/**
+ * @brief 找出棋盘中距离棋子距离小于等于2的所有空位，并通过chess数组传出，chess数组的长度为length
+ * @param board[15][15] 棋盘
+ * @param chess 接收棋子列表
+ * @param length 接收棋子数量
+ */
+int getValuableBlank(int board[15][15], Chess *chess, int *length);
