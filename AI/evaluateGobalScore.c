@@ -29,7 +29,7 @@ int evaluateGobalScore(const int board[15][15], const Type self_type)
         {
             array[x+7] = readBoard(board, x, y);
         }
-        //countUnit(array, 15, self_type, &self, &enemy);
+        countUnit(array, 15, self_type, &self, &enemy);
     }
     //y轴
     for (int x = -7; x <= 7; x++)
@@ -39,7 +39,7 @@ int evaluateGobalScore(const int board[15][15], const Type self_type)
         {
             array[y+7] = readBoard(board, x, y);
         }
-        //countUnit(array, 15, self_type, &self, &enemy);
+        countUnit(array, 15, self_type, &self, &enemy);
     }
     //主对角线方向
     {
