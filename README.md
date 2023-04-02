@@ -1,6 +1,15 @@
 # CSMind
 计算思维
 # 项目名
+HEU Gobang Platform
+# 技术特性
+## ConsoleGUI
+### 8-bit色彩 Windows Command Line Host
+采用wprintf的特殊输出前缀实现Foreground全彩输出
+通过更改CONSOLE_SCREEN_BUFFER_INFO_EX中的ColorTable实现Background全彩输出
+### 棋盘无极DPI
+通过测量传入的屏幕大小参数自动更改棋盘渲染大小
+### 基于输入-输出循环的交互系统
 
 # 提交规范
 
