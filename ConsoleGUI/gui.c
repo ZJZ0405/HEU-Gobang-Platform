@@ -69,7 +69,7 @@ struct Color
     int b;
 };
 
-struct Color start = {0xfc, 0x35, 0x4c}, end = {0xa, 0xbf, 0xbc}, defaultColor = {131, 94, 29}; // 渐变色起始颜色，结束颜色，输出默认颜色
+struct Color start = {0xfc, 0x35, 0x4c}, end = {0xa, 0xbf, 0xbc}, defaultColor = {255, 233, 92}; // 渐变色起始颜色，结束颜色，输出默认颜色
 /**
  * @brief Create a Color Array object
  *
@@ -748,10 +748,12 @@ void DrawDialog(int x, int y, int width, int height)
     // 用黑色填充
     for (int i = 1; i < height - 1; i++)
     {
+        wchar_t *str = (wchar_t *)malloc(sizeof(wchar_t) * (width - 1));
         for (int j = 1; j < width - 1; j++)
         {
-            Console_Print_Prefix(L" ", defaultColor, x + j, y + i);
+            str[j - 1] = L' ';
         }
+        Console_Print_Prefix(str, defaultColor, x + 1, y + i);
     }
 }
 /**
@@ -829,6 +831,7 @@ void Game_Start()
     {
         board[i] = (int *)calloc(sizeof(int), 15);
     }
+    DrawBoardLine();
     nbw = GetFirst();
     ClearScreen();
     DrawBoardLine();
@@ -866,6 +869,20 @@ void Print_Logo()
     Console_Print_Prefix(logo, (struct Color){18, 107, 174}, 0, (bufferSize.Y - 24) / 2);
     Console_Print_Prefix(L"Welcome to HEU Gobang Platform!", defaultColor, 54 + (bufferSize.X - 54 - 30) / 2, bufferSize.Y / 2 - 2);
     Console_Print_Prefix(L"点击左键继续", defaultColor, 54 + (bufferSize.X - 54 - 12) / 2, bufferSize.Y / 2 + 2);
+}
+
+void MapColorTable()
+{
+    CONSOLE_SCREEN_BUFFER_INFOEX csbiex;
+    csbiex.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfoEx(hOut, &csbiex);
+    csbiex.ColorTable[0] = RGB(83, 60, 27); // 替代黑色
+    SetConsoleScreenBufferInfoEx(hOut, &csbiex);
+}
+
+void WaitLeftClick()
+{
     // 等待鼠标点击
     INPUT_RECORD inRec;
     DWORD res;
@@ -880,11 +897,15 @@ void Print_Logo()
 int main()
 {
     Initialize_Console();
+    MapColorTable();
     full_screen();
     ClearScreen();
     Print_Logo();
+    DrawBoardLine();
+    WaitLeftClick();
     player1 = (wchar_t *)malloc(sizeof(wchar_t) * 20);
     player2 = (wchar_t *)malloc(sizeof(wchar_t) * 20);
+    DrawBoardLine();
     GetPlayerName(player1);
     GetPlayerName(player2);
     Game_Start();
