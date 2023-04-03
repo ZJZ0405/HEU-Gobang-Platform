@@ -28,6 +28,7 @@ Grade judgeStatus(int length, bool first_status, bool end_status)
         {
             switch (length)
             {
+            case 5: return CON_FIVE;
             case 4: return INACTIVE_FOUR;
             case 3: return INACTIVE_THREE;
             case 2: return INACTIVE_TWO;
@@ -41,6 +42,7 @@ Grade judgeStatus(int length, bool first_status, bool end_status)
         {
             switch (length)
             {
+            case 5: return CON_FIVE;
             case 4: return INACTIVE_FOUR;
             case 3: return INACTIVE_THREE;
             case 2: return INACTIVE_TWO;
@@ -48,7 +50,12 @@ Grade judgeStatus(int length, bool first_status, bool end_status)
             }
         }
         else
-        {}
+        {
+            if (5 == length)
+            {
+                return CON_FIVE;
+            }
+        }
     }
 
     return -1;

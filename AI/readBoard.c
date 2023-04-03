@@ -19,5 +19,5 @@ Type readBoard(const int board[15][15], const int x, const int y)
         printf("ERROR - point is not in board");
         return -2;
     }
-        return *((int *)board + 15 * (7 - y) + x + 7);
+    return *((int *)board + 15 * (7 - y) + x + 7);
 }

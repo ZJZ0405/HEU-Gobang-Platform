@@ -1,8 +1,5 @@
 #include "base.h"
 
-
-
-
 /**
  * @brief 评估当前全局分数
  * @param board[15][15] 当前棋盘
@@ -96,15 +93,16 @@ int evaluateGobalScore(const int board[15][15], const Type self_type)
         }
     }
 
-    if (1 <= self.con_five)
-    {
-        return -1;
-    }
-    else if (1 <= enemy.con_five)
-    {
-        return -2;
-    }
-    int output = self.active_four * 10000
+    // if (1 <= self.con_five)
+    // {
+    //     return -1;
+    // }
+    // else if (1 <= enemy.con_five)
+    // {
+    //     return -2;
+    // }
+    int output = self.con_five * 1000000
+                 +self.active_four * 10000
                  +self.active_three * 1000
                  +self.active_two * 100
                  +self.active_one *10
@@ -112,6 +110,7 @@ int evaluateGobalScore(const int board[15][15], const Type self_type)
                  +self.inactive_three * 100
                  +self.inactive_two * 10
                  
+                 -enemy.con_five * 1000000
                  -enemy.active_four * 10000
                  -enemy.active_three * 1000
                  -enemy.active_two * 100
