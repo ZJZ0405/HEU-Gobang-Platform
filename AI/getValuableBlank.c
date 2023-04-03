@@ -34,4 +34,5 @@ void getValuableBlank(int board[][15], Chess *chess, int *length)
             }
         }
     }
+    *length = count;
 }
