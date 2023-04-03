@@ -2,81 +2,36 @@
 
 /**
  * @brief 找出棋盘中距离棋子距离小于等于2的所有空位，并通过chess数组传出，chess数组的长度为length
- * @param board[15][15] 棋盘
- * @param chess 接收棋子列表
- * @param length 接收棋子数量
+ *
  */
-int getValuableBlank(int board[15][15], Chess *chess, int *length)
+void getValuableBlank(int board[][15], Chess *chess, int *length)
 {
-    // 找出棋盘中距离棋子距离小于等于2的所有空位，并通过chess数组传出，chess数组的长度为length
-    // 返回值为找到的空位的个数
-    int x, y;
+    int i, j, k, l, m, n;
     int count = 0;
-    for (x = -7; x < 7; x++)
+    for (i = 0; i < 15; i++)
     {
-        for (y = -7; y < 7; y++)
+        for (j = 0; j < 15; j++)
         {
-            if (0 == readBoard(board, x, y))
+            if (board[i][j] == 0)
             {
-                if (x - 1 >= 0 && 0 != readBoard(board, x-1, y))
+                for (k = i - 2; k <= i + 2; k++)
                 {
-                    chess[count].x = x;
-                    chess[count].y = y;
-                    chess[count].type = readBoard(board, x-1, y);
-                    count++;
-                }
-                else if (x + 1 < 7 && 0 != readBoard(board, x+1, y))
-                {
-                    chess[count].x = x;
-                    chess[count].y = y;
-                    chess[count].type = readBoard(board, x+1, y);
-                    count++;
-                }
-                else if (y - 1 >= -7 && 0 != readBoard(board, x, y-1))
-                {
-                    chess[count].x = x;
-                    chess[count].y = y;
-                    chess[count].type = readBoard(board, x, y-1);
-                    count++;
-                }
-                else if (y + 1 < 7 && 0 != readBoard(board, x, y+1))
-                {
-                    chess[count].x = x;
-                    chess[count].y = y;
-                    chess[count].type = readBoard(board, x, y+1);
-                    count++;
-                }
-                else if (x - 1 >= -7 && y - 1 >= -7 && 0 != readBoard(board, x-1, y-1))
-                {
-                    chess[count].x = x;
-                    chess[count].y = y;
-                    chess[count].type = readBoard(board, x-1, y-1);
-                    count++;
-                }
-                else if (x - 1 >= -7 && y + 1 < 7 && 0 != readBoard(board, x-1, y+1))
-                {
-                    chess[count].x = x;
-                    chess[count].y = y;
-                    chess[count].type = readBoard(board, x-1, y+1);
-                    count++;
-                }
-                else if (x + 1 < 7 && y - 1 >= -7 && readBoard(board, x+1, y-1))
-                {
-                    chess[count].x = x;
-                    chess[count].y = y;
-                    chess[count].type = readBoard(board, x+1, y-1);
-                    count++;
-                }
-                else if (x + 1 < 7 && y + 1 < 7 && 0 != readBoard(board, x+1, y+1))
-                {
-                    chess[count].x = x;
-                    chess[count].y = y;
-                    chess[count].type = readBoard(board, x+1, y+1);
-                    count++;
+                    for (l = j - 2; l <= j + 2; l++)
+                    {
+                        if (k >= 0 && k < 15 && l >= 0 && l < 15)
+                        {
+                            if (board[k][l] == 1 || board[k][l] == 2)
+                            {
+                                chess[count].x = j - 7;
+                                chess[count].y = i - 7;
+                                chess[count].type = EMPTY;
+                                count++;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-    *length = count;
-    return count;
 }
