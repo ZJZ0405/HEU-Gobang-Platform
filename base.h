@@ -94,6 +94,16 @@ void ProcessNext(const int board[15][15], Type self_type, Chess *in, Chess *out)
 Type readBoard(const int board[15][15], const int x, const int y);
 
 /**
+ * @brief 写入数据到棋盘
+ * @param board[15][15] 棋盘
+ * @param x x
+ * @param y y
+ * @param type 种类
+ * @return 是否成功写入
+ */
+bool writeBoard(int board[15][15], const int x, const int y, Type type);
+
+/**
  * @brief 判断连子类型
  * @param length 长度
  * @param first_status 开始是否阻塞
@@ -136,3 +146,22 @@ int evaluateScore(const int board[15][15], const Type self_type, const Chess *in
  * @param length 接收棋子数量
  */
 int getValuableBlank(int board[15][15], Chess *chess, int *length);
+
+/**
+ * @brief DFS节点
+ * @param chess 棋子
+ * @param score 得分
+*/
+typedef struct
+{
+    Chess chess;
+    int score;
+} Node;
+
+
+/**
+ * @brief 深度优先搜索，寻找落子位置
+ * @param board[15][15] 棋盘
+ * @param deepth 搜索深度
+*/
+Node DFS(int board[15][15], Chess chess,int deepth);
