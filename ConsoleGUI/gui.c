@@ -777,7 +777,7 @@ void GetMouseInput(int **board, bool *stopflag)
         if (isAI)
         {
             Chess inChess;
-            int score = DFS(board, 3, BLACK, &inChess);
+            int score = DFS(board, 2, BLACK, &inChess);
             writeBoard(board, inChess.x, inChess.y, BLACK);
             UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
             step[stepCount] = (Chess){inChess.x + 7, -1 * inChess.y + 7, BLACK};
@@ -944,7 +944,7 @@ void Game_Start()
     if (isAI && nbw == 1)
     {
         Chess inChess;
-        int score = DFS(board, 3, BLACK, &inChess);
+        int score = DFS(board, 2, BLACK, &inChess);
         writeBoard(board, inChess.x, inChess.y, BLACK);
         UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
         step[stepCount] = (Chess){inChess.x + 7, -1 * inChess.y + 7, BLACK};
