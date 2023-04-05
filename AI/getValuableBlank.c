@@ -6,11 +6,37 @@
  * @param chess 接收棋子列表
  * @param length 接收棋子数量
  */
-int getValuableBlank(int board[15][15], Chess *chess, int *length)
+void getValuableBlank(int board[15][15], Chess *chess, int *length)
 {
+     int count = 0;
+     for (int x = -7; x < 7; x++)
+     {
+         for (int y = -7; y < 7; y++)
+         {
+             if (EMPTY == readBoard(board, x, y))
+             {
+                 for (int _x = x - 2; _x <= x + 2 && _x >= -7 && _x <= 7; _x++)
+                 {
+                     for (int _y = y - 2; _y <= y + 2 && _y >= -7 && _y <= 7; _y++)
+                     {
+                         
+                        if (EMPTY != readBoard(board, _x, _y))
+                        {
+                            (chess+count)->x = x;
+                            (chess+count)->y = y;
+                            (chess+count)->type = EMPTY;
+                            count++;
+                            break;
+                        }
+                     }
+                 }
+             }
+         }
+     }
+     *length = count;
     // 找出棋盘中距离棋子距离小于等于2的所有空位，并通过chess数组传出，chess数组的长度为length
     // 返回值为找到的空位的个数
-    int x, y;
+    /* int x, y;
     int count = 0;
     for (x = -7; x < 7; x++)
     {
@@ -78,5 +104,5 @@ int getValuableBlank(int board[15][15], Chess *chess, int *length)
         }
     }
     *length = count;
-    return count;
+    return count; */
 }
