@@ -91,7 +91,7 @@ void ProcessNext(const int board[15][15], Type self_type, Chess *in, Chess *out)
  * @param y
  * @return 该坐标下棋盘上棋子的类型
  */
-Type readBoard(const int board[15][15], const int x, const int y);
+Type readBoard(int **board, const int x, const int y);
 
 /**
  * @brief 写入数据到棋盘
@@ -101,7 +101,7 @@ Type readBoard(const int board[15][15], const int x, const int y);
  * @param type 种类
  * @return 是否成功写入
  */
-bool writeBoard(int board[15][15], const int x, const int y, Type type);
+bool writeBoard(int **board, const int x, const int y, Type type);
 
 /**
  * @brief 判断连子类型
@@ -128,7 +128,7 @@ void countUnit(const int array[], const int array_lenght, const Type self_type, 
  * @param self_type 己方棋子颜色
  * @return 评估得分
  */
-int evaluateGobalScore(const int board[15][15], const Type self_type);
+int evaluateGobalScore(int** board, const Type self_type);
 
 /**
  * @brief 评估当前单步分数
@@ -145,7 +145,7 @@ int evaluateScore(const int board[15][15], const Type self_type, const Chess *in
  * @param chess 接收棋子列表
  * @param length 接收棋子数量
  */
-int getValuableBlank(int board[15][15], Chess *chess, int *length);
+int getValuableBlank(int **board, Chess *chess, int *length);
 
 /**
  * @brief DFS节点
@@ -164,4 +164,4 @@ typedef struct
  * @param board[15][15] 棋盘
  * @param deepth 搜索深度
 */
-Node DFS(int board[15][15], Chess chess,int deepth);
+Node DFS(int **board, Chess chess,int deepth);

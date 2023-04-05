@@ -8,34 +8,51 @@
 #include <fcntl.h>
 #include <io.h>
 #include <time.h>
+#include "C:\Users\diaoz\Desktop\HEUSource\CSMind\CSMind\base.h"
 
 #pragma execution_character_set("utf-8")
 
-const wchar_t logo[25][51] = {L"                      +3666!.                     ", L"               v66  1666666668o  66-              ", L"           .3v.66oi666666o 666666666 38           ", L"        .6zv66666-6666666;636668.n36666 68        ", L"      .6 866666686.8868 666666v.3-u666666%;6      ", L"     3z866i..n666i66866666666666.16666666 6v6+    ", L"    6 66666v*666663!^33~~o~o86.8666.6!.-66668 6   ", L"   6.66 66666666.6~~;;*******;;~;63666z6666666 8  ", L"  6 6666 ; i66.8~;**^^+++++++^^*;;~866666 8  .6 6 ", L" 3 6666n 8866zo;**^+-.      -.-+^*;~o.638. i6666~+", L" 6!666688666*~;*^+-. noooooooz..-+^*~~ 666666666 6", L"~o6666666661!;*^-.  #--....--.3  .+^*;68666666@883", L"6 6+n~    +oo-...+o~.#i6^&$8 .n*....~n-. --o~..#6n", L"6 6v#!..- ;&%+...~#6-#i.......#i.- .!#o ..~#3- #6v", L"^o6         .       ..8&3..~+ .                #86", L" 6z66666n666.o;*^+-.           .-+^;~z-666666666 6", L" ! 666;38-666.~~;*^+-# ;#.# -#-+^*;~1 666a666666u-", L"  6 666!-6.666i6~;;*^^++++++^^^*;;o666663.68666 6 ", L"   6 66666.6866636o~~;;*****;;~~1v8666o83; 666 6  ", L"    6 36668v66666666 363ava66a-6666666z666666 6   ", L"     a6i66666. 666666666666666666in.u8!6666.6.    ", L"      .8^6666836668638 8u1i36!6z631nu6666*!8      ", L"         86 366668.*-16i8z!..o186666666 81        ", L"            68 86666666666666666666! 66           ", L"                66~  u6666666v  u66               "};
+/// @brief 学校Logo
+wchar_t logo[25][51] = {L"                      +3666!.                     ", L"               v66  1666666668o  66-              ", L"           .3v.66oi666666o 666666666 38           ", L"        .6zv66666-6666666;636668.n36666 68        ", L"      .6 866666686.8868 666666v.3-u666666%;6      ", L"     3z866i..n666i66866666666666.16666666 6v6+    ", L"    6 66666v*666663!^33~~o~o86.8666.6!.-66668 6   ", L"   6.66 66666666.6~~;;*******;;~;63666z6666666 8  ", L"  6 6666 ; i66.8~;**^^+++++++^^*;;~866666 8  .6 6 ", L" 3 6666n 8866zo;**^+-.      -.-+^*;~o.638. i6666~+", L" 6!666688666*~;*^+-. noooooooz..-+^*~~ 666666666 6", L"~o6666666661!;*^-.  #--....--.3  .+^*;68666666@883", L"6 6+n~    +oo-...+o~.#i6^&$8 .n*....~n-. --o~..#6n", L"6 6v#!..- ;&%+...~#6-#i.......#i.- .!#o ..~#3- #6v", L"^o6         .       ..8&3..~+ .                #86", L" 6z66666n666.o;*^+-.           .-+^;~z-666666666 6", L" ! 666;38-666.~~;*^+-# ;#.# -#-+^*;~1 666a666666u-", L"  6 666!-6.666i6~;;*^^++++++^^^*;;o666663.68666 6 ", L"   6 66666.6866636o~~;;*****;;~~1v8666o83; 666 6  ", L"    6 36668v66666666 363ava66a-6666666z666666 6   ", L"     a6i66666. 666666666666666666in.u8!6666.6.    ", L"      .8^6666836668638 8u1i36!6z631nu6666*!8      ", L"         86 366668.*-16i8z!..o186666666 81        ", L"            68 86666666666666666666! 66           ", L"                66~  u6666666v  u66               "};
 
+/// @brief 棋盘缩放倍率
 int chessZoomRate;
+/// @brief 棋盘位置、信息面板位置
 int chessBoardX, chessBoardY, battlePanelX, battlePanelY;
+/// @brief 认输按钮位置
 int surrenderX, surrenderY, surrenderWidth, surrenderHeight;
-// 是否可以悔棋
+/// @brief 是否可以悔棋
 bool canRegret = false;
-
-// 添加悔棋功能的全局变量
+/// @brief 悔棋按钮位置
 int regretX, regretY, regretWidth, regretHeight;
-// 上一步棋的全局变量
+/// @brief 上一步棋的位置
 int lastX = -1, lastY = -1;
-
+/// @brief 步骤记录，用于悔棋
+Chess *step;
+/// @brief 步骤记录长度
+int stepCount;
+/// @brief 是否在AI模式
+bool isAI = false;
+/// @brief 玩家1名称
 wchar_t *player1;
+/// @brief 玩家2名称（AI模式中为AI名称）
 wchar_t *player2;
-
+/// @brief 当前活跃玩家，1=黑；2=白
 int nbw = 1;
-
+/// @brief 棋盘的渐变色数组
 struct Color *colors;
-
-wchar_t *outputFormatPrefix = L"\x1b[38;2;%d;%d;%dm"; // 输出格式前缀
-
+/// @brief 更改控制台画笔颜色的前缀
+wchar_t *outputFormatPrefix = L"\x1b[38;2;%d;%d;%dm";
+/// @brief 棋盘的制表符
 wchar_t lt = L'┏', rt = L'┓', lb = L'┗', rb = L'┛', h = L'━', v = L'┃', t = L'┳', b = L'┻', l = L'┣', r = L'┫', m = L'╋'; // 棋盘制表符
-
-COORD bufferSize; // 缓冲区大小
+/// @brief 屏幕缓冲区大小
+COORD bufferSize;
+/// @brief AI随机名称的字符串数组
+wchar_t **firstname;
+/// @brief AI随机名称的字符串数组
+wchar_t **lastname;
+/// @brief AI随机名称的字符串数组长度
+int firstcount, lastcount;
 
 void Game_Start();
 
@@ -44,7 +61,7 @@ void Regret(int **board);
 void Print_Logo();
 
 void Print_Grandient_Logo();
-
+/// @brief 颜色结构体
 struct Color
 {
     int r;
@@ -56,7 +73,7 @@ struct Color start = {238, 121, 89}, end = {177, 213, 200}, defaultColor = {255,
 /**
  * @brief Create a Color Array object
  *
- * @param length
+ * @param length 数组长度
  * @return struct Color*
  */
 struct Color *CreateColorArray(int length) // 创建渐变色数组
@@ -66,8 +83,8 @@ struct Color *CreateColorArray(int length) // 创建渐变色数组
 /**
  * @brief Get the Clear Color Array object
  *
- * @param colors
- * @param length
+ * @param colors 渐变色数组
+ * @param length 数组长度
  */
 void GetClearColorArray(struct Color *colors, int length)
 {
@@ -79,10 +96,10 @@ void GetClearColorArray(struct Color *colors, int length)
     }
 }
 /**
- * @brief Get the Grandient Color Array object
+ * @brief Get the Gradient Color Array object
  *
- * @param colors
- * @param length
+ * @param colors 渐变色数组
+ * @param length 数组长度
  */
 void GetGrandientColorArray(struct Color *colors, int length) // 获取渐变色数组
 {
@@ -131,8 +148,8 @@ DWORD Initialize_Console() // 初始化控制台，设置编码为UTF-8，设置
 /**
  * @brief 输出彩色字符串
  *
- * @param str
- * @param color
+ * @param str 字符串
+ * @param color 颜色
  */
 void Console_Print(wchar_t *str, struct Color color) // 输出彩色字符串
 {
@@ -143,10 +160,10 @@ void Console_Print(wchar_t *str, struct Color color) // 输出彩色字符串
 /**
  * @brief 输出彩色字符串，带坐标
  *
- * @param str
- * @param color
- * @param x
- * @param y
+ * @param str 字符串
+ * @param color 颜色
+ * @param x 左上x坐标
+ * @param y 左上y坐标
  */
 void Console_Print_Prefix(wchar_t *str, struct Color color, int x, int y) // x,y为字符串左上角坐标
 {
@@ -156,9 +173,9 @@ void Console_Print_Prefix(wchar_t *str, struct Color color, int x, int y) // x,y
 /**
  * @brief 画棋子
  *
- * @param x
- * @param y
- * @param bw
+ * @param x 棋盘x坐标
+ * @param y 棋盘y坐标
+ * @param bw 棋子颜色
  */
 void DrawChess(int x, int y, int bw)
 {
@@ -168,11 +185,11 @@ void DrawChess(int x, int y, int bw)
 /**
  * @brief 画棋盘
  *
- * @param x
- * @param y
- * @param x1
- * @param y1
- * @param board
+ * @param x 棋盘左上x坐标
+ * @param y 棋盘左上y坐标
+ * @param x1 棋盘右下x坐标
+ * @param y1 棋盘右下y坐标
+ * @param board 棋盘数组
  */
 void DrawChessBoard(int x, int y, int x1, int y1, int **board) // x,y,x1,y1为棋盘可绘制矩形区域，自动在此区域内居中绘制棋盘
 {
@@ -252,7 +269,13 @@ void DrawChessBoard(int x, int y, int x1, int y1, int **board) // x,y,x1,y1为�
         }
     }
 }
-
+/**
+ * @brief 更新棋盘
+ *
+ * @param newboard  新棋盘
+ * @param newX  新棋子x坐标
+ * @param newY  新棋子y坐标
+ */
 void UpdateChessBoard(int **newboard, int newX, int newY)
 {
     // 画所有棋子
@@ -298,8 +321,8 @@ void full_screen() // 全屏显示控制台窗口
 /**
  * @brief Get the Chess Board Pos object
  *
- * @param x
- * @param y
+ * @param x  光标x坐标
+ * @param y  光标y坐标
  */
 void GetChessBoardPos(int *x, int *y)
 {
@@ -309,7 +332,7 @@ void GetChessBoardPos(int *x, int *y)
 /**
  * @brief 判断是否有一方胜利
  *
- * @param board
+ * @param board 棋盘
  * @return true
  * @return false
  */
@@ -363,7 +386,7 @@ bool CheckWin(int **board)
  */
 void ClearScreen()
 {
-    wchar_t *clear = (wchar_t *)malloc(sizeof(wchar_t) * bufferSize.X);
+    wchar_t *clear = (wchar_t *)calloc(bufferSize.X, sizeof(wchar_t));
     for (int i = 0; i < bufferSize.X; i++)
     {
         clear[i] = L' ';
@@ -406,8 +429,8 @@ void DrawBattlePanel(int highLightPlayer)
     }
     Console_Print_Prefix(L"白子玩家", defaultColor, x + 2, y + 1);
     Console_Print_Prefix(L"黑子玩家", defaultColor, x + 2, y + 4);
-    Console_Print_Prefix(player1, highLightPlayer == 1 ? (struct Color){240, 200, 183} : defaultColor, x + 2, y + 2);
-    Console_Print_Prefix(player2, highLightPlayer == 2 ? (struct Color){240, 200, 183} : defaultColor, x + 2, y + 5);
+    Console_Print_Prefix(player1, highLightPlayer == 2 ? (struct Color){240, 200, 183} : defaultColor, x + 2, y + 2);
+    Console_Print_Prefix(player2, highLightPlayer == 1 ? (struct Color){240, 200, 183} : defaultColor, x + 2, y + 5);
     // 绘制认输与悔棋按钮，位于玩家信息窗口内，按钮至少三格高，十二格宽，水平居中，按钮内文字也水平居中
     int buttonWidth = 12, buttonHeight = 3;
     int buttonX = (width - buttonWidth) / 2 + x, buttonY = (height - buttonHeight) / 2 + y;
@@ -469,7 +492,11 @@ void DrawBattlePanel(int highLightPlayer)
     // 写入regretHeight
     regretHeight = buttonHeight;
 }
-
+/**
+ * @brief 更新信息面板
+ *
+ * @param highLightPlayer  高亮玩家
+ */
 void UpdateBattlePanel(int highLightPlayer)
 {
     Console_Print_Prefix(player1, highLightPlayer == 1 ? (struct Color){240, 200, 183} : defaultColor, battlePanelX + 2, battlePanelY + 2);
@@ -484,8 +511,8 @@ void DrawBoardLine()
     int x = 0, y = 0;
     int width = bufferSize.X, height = bufferSize.Y;
     // 先生成字符串数组 再打印
-    wchar_t *top = (wchar_t *)malloc(sizeof(wchar_t) * (width + 1));
-    wchar_t *bottom = (wchar_t *)malloc(sizeof(wchar_t) * (width + 1));
+    wchar_t *top = (wchar_t *)calloc(width + 1, sizeof(wchar_t));
+    wchar_t *bottom = (wchar_t *)calloc(width + 1, sizeof(wchar_t));
     for (int i = 0; i < width; i++)
     {
         top[i] = L'═';
@@ -515,7 +542,7 @@ void DrawBoardLine()
 /**
  * @brief 绘制胜利对话框
  *
- * @param bw
+ * @param bw 胜利方
  */
 void DrawWinnerDialog(int bw)
 {
@@ -528,7 +555,7 @@ void DrawWinnerDialog(int bw)
     wchar_t *winner;
     // 填充对话框为黑色
     // 生成背景填充字符串数组
-    wchar_t *fill = (wchar_t *)malloc(sizeof(wchar_t) * (width + 1));
+    wchar_t *fill = (wchar_t *)calloc(width + 1, sizeof(wchar_t));
     for (int i = 0; i < width + 1; i++)
     {
         fill[i] = L' ';
@@ -612,7 +639,7 @@ bool DrawSurrenderConfirmDialog()
     int width = 40;
     int height = 10;
     // 填充对话框为黑色
-    wchar_t *fill = (wchar_t *)malloc(sizeof(wchar_t) * (width + 1));
+    wchar_t *fill = (wchar_t *)calloc(width + 1, sizeof(wchar_t));
     for (int i = 0; i < width + 1; i++)
     {
         fill[i] = L' ';
@@ -674,8 +701,8 @@ LABEL1:
 /**
  * @brief Get the Mouse Input object.Global Input Process Function
  *
- * @param board
- * @param stopflag
+ * @param board 二维数组指针
+ * @param stopflag 停止标志
  */
 void GetMouseInput(int **board, bool *stopflag)
 {
@@ -721,8 +748,10 @@ void GetMouseInput(int **board, bool *stopflag)
     {
         if (board[y][x] != 0)
             return;
+        step[stepCount] = (Chess){x, y, nbw};
         board[y][x] = nbw;
         canRegret = true;
+        stepCount++;
         /*    for (int i = 0; i < 15; i++)
            {
                for (int j = 0; j < 15; j++)
@@ -741,18 +770,37 @@ void GetMouseInput(int **board, bool *stopflag)
             *stopflag = true;
             DrawWinnerDialog(nbw);
         }
-        nbw = nbw == 1 ? 2 : 1;
+
         // 让正在下棋的一方的名字高亮显示，即将下棋的一方的名字变为红色
+        nbw = ((nbw == 1) ? 2 : 1);
         UpdateBattlePanel(nbw);
+        if (isAI)
+        {
+            int depth = 3;
+            Chess inChess = {lastX, lastY, BLACK};
+            Node root = DFS(board, inChess, depth);
+            writeBoard(board, root.chess.x, root.chess.y, BLACK);
+            UpdateChessBoard(board, root.chess.x + 7, -1 * root.chess.y + 7);
+            step[stepCount] = (Chess){root.chess.x + 7, -1 * root.chess.y + 7, BLACK};
+            stepCount++;
+            if (CheckWin(board))
+            {
+                *stopflag = true;
+                DrawWinnerDialog(nbw);
+            }
+            nbw = nbw == 1 ? 2 : 1;
+            UpdateBattlePanel(nbw);
+            // DrawChessBoard(bufferSize.X * 0.25, 0, bufferSize.X, bufferSize.Y, board);
+        }
     }
 }
 /**
  * @brief 绘制对话框
  *
- * @param x
- * @param y
- * @param width
- * @param height
+ * @param x  左上角x坐标
+ * @param y  左上角y坐标
+ * @param width  宽度
+ * @param height  高度
  */
 void DrawDialog(int x, int y, int width, int height)
 {
@@ -781,7 +829,7 @@ void DrawDialog(int x, int y, int width, int height)
     // 用黑色填充
     for (int i = 1; i < height - 1; i++)
     {
-        wchar_t *str = (wchar_t *)calloc(sizeof(wchar_t), width);
+        wchar_t *str = (wchar_t *)calloc(sizeof(wchar_t), width + 1);
         for (int j = 1; j < width - 1; j++)
         {
             str[j - 1] = L' ';
@@ -792,17 +840,33 @@ void DrawDialog(int x, int y, int width, int height)
 /**
  * @brief 悔棋
  *
- * @param board
+ * @param board  棋盘
  */
 void Regret(int **board)
 {
-    if (canRegret)
+    if (stepCount)
     {
-        board[lastY][lastX] = 0;
+        stepCount--;
+        board[step[stepCount].y][step[stepCount].x] = 0;
+        // board[lastY][lastX] = 0;
         nbw = nbw == 1 ? 2 : 1;
         DrawChessBoard(bufferSize.X * 0.25, 0, bufferSize.X, bufferSize.Y, board);
+        if (stepCount)
+            UpdateChessBoard(board, step[stepCount - 1].x, step[stepCount - 1].y);
         DrawBattlePanel(nbw);
-        canRegret = false;
+        // canRegret = false;
+        if (isAI)
+        {
+            // 将AI的棋子也悔掉
+            stepCount--;
+            board[step[stepCount].y][step[stepCount].x] = 0;
+            // board[lastY][lastX] = 0;
+            nbw = nbw == 1 ? 2 : 1;
+            DrawChessBoard(bufferSize.X * 0.25, 0, bufferSize.X, bufferSize.Y, board);
+            if (stepCount)
+                UpdateChessBoard(board, step[stepCount - 1].x, step[stepCount - 1].y);
+            DrawBattlePanel(nbw);
+        }
     }
 }
 /**
@@ -840,13 +904,11 @@ LABEL1:
     int y1 = coordScreen.Y;
     if (x1 >= x + width / 2 - 4 && x1 <= x + width / 2 + 4 && y1 == y + height / 2 - 1)
     {
-        // 黑子
-        bw = 1;
+        bw = 2;
     }
     else if (x1 >= x + width / 2 - 4 && x1 <= x + width / 2 + 4 && y1 == y + height / 2)
     {
-        // 白子
-        bw = 2;
+        bw = 1;
     }
     else
     {
@@ -872,17 +934,35 @@ void Game_Start()
     }
     DrawBoardLine();
     nbw = GetFirst();
+    // 初始化step变量，用于存储落子记录
+    step = (Chess *)calloc(225, sizeof(Chess));
+    stepCount = 0;
     ClearScreen();
     DrawBoardLine();
     DrawChessBoard(bufferSize.X * 0.25, 0, bufferSize.X, bufferSize.Y, board);
     DrawBattlePanel(nbw);
     bool stopflag = false;
+    if (isAI && nbw == 1)
+    {
+        int depth = 3;
+        Chess inChess = {lastX, lastY, BLACK};
+        Node root = DFS(board, inChess, depth);
+        writeBoard(board, root.chess.x, root.chess.y, BLACK);
+        step[stepCount] = (Chess){root.chess.x + 7, -1 * root.chess.y + 7, BLACK};
+        stepCount++;
+        nbw = 2;
+        UpdateChessBoard(board, root.chess.x + 7, -1 * root.chess.y + 7);
+    }
     while (!stopflag)
     {
         GetMouseInput(board, &stopflag);
     }
 }
-
+/**
+ * @brief Get the Player Name object
+ *
+ * @param player  玩家名字
+ */
 void GetPlayerName(wchar_t *player)
 {
     // 绘制一个输入框，提示输入玩家名字
@@ -907,11 +987,10 @@ void GetPlayerName(wchar_t *player)
     wscanf(L"%ls", player);
     // 将玩家输入的名字赋值给player
 }
-
-wchar_t **firstname;
-wchar_t **lastname;
-int firstcount, lastcount;
-
+/**
+ * @brief Get the AI Name Array object
+ *
+ */
 void ReadNameFile()
 {
     firstname = (wchar_t **)malloc(sizeof(wchar_t *) * 2000);
@@ -951,7 +1030,10 @@ void ReadNameFile()
     lastcount = i;
     fclose(fp);
 }
-
+/**
+ * @brief Print HEU Gobang Platform Logo and Welcome Message
+ *
+ */
 void Print_Logo()
 {
     DrawBoardLine();
@@ -985,6 +1067,7 @@ LABEL1:
         DrawBoardLine();
         GetPlayerName(player1);
         GetPlayerName(player2);
+        isAI = false;
         // 热座模式
         Game_Start();
         // 输入玩家信息
@@ -1009,6 +1092,7 @@ LABEL1:
             }
         }
         player2[wcslen(player2) - 1] = L'\0';
+        isAI = true;
         // 人机对战
         Game_Start();
     }
@@ -1023,7 +1107,10 @@ LABEL1:
         goto LABEL1;
     }
 }
-
+/**
+ * @brief Map Color Table to replace background color and chess color
+ *
+ */
 void MapColorTable()
 {
     CONSOLE_SCREEN_BUFFER_INFOEX csbiex;
@@ -1034,7 +1121,10 @@ void MapColorTable()
     csbiex.ColorTable[1] = RGB(240, 200, 183); // 替代白色，落子强调色
     SetConsoleScreenBufferInfoEx(hOut, &csbiex);
 }
-
+/**
+ * @brief wait for left click
+ *
+ */
 void WaitLeftClick()
 {
     // 等待鼠标点击
@@ -1047,7 +1137,10 @@ void WaitLeftClick()
     } while (inRec.Event.MouseEvent.dwButtonState != FROM_LEFT_1ST_BUTTON_PRESSED);
     ClearScreen();
 }
-
+/**
+ * @brief desparated
+ *
+ */
 void Print_Grandient_Logo()
 {
     srand((unsigned)time(NULL));

@@ -7,7 +7,7 @@
  * @param y
  * @return 值
  */
-Type readBoard(const int board[15][15], const int x, const int y)
+Type readBoard(int **board, int x, int y)
 {
     if (NULL == board)
     {
@@ -19,5 +19,10 @@ Type readBoard(const int board[15][15], const int x, const int y)
         printf("ERROR - point is not in board");
         return -2;
     }
-    return *((int *)board + 15 * (7 - y) + x + 7);
+
+    //wprintf(L"\x1b[38;2;%d;%d;%dm readBoard accessing board[%d][%d] = %d\n",255,255,255, x, y, board[-1 * y + 7][x + 7]);
+    return board[-1 * y + 7][x + 7];
+
+    /* int(*p)[15] = board;
+    return *(*(p - x + 7) + y + 7); */
 }
