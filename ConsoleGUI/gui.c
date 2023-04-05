@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <io.h>
 #include <time.h>
-#include "C:\Users\diaoz\Desktop\HEUSource\CSMind\CSMind\base.h"
+#include "base.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -776,12 +776,11 @@ void GetMouseInput(int **board, bool *stopflag)
         UpdateBattlePanel(nbw);
         if (isAI)
         {
-            int depth = 3;
-            Chess inChess = {lastX, lastY, BLACK};
-            Node root = DFS(board, inChess, depth);
-            writeBoard(board, root.chess.x, root.chess.y, BLACK);
-            UpdateChessBoard(board, root.chess.x + 7, -1 * root.chess.y + 7);
-            step[stepCount] = (Chess){root.chess.x + 7, -1 * root.chess.y + 7, BLACK};
+            Chess inChess;
+            int score = DFS(board, 3, BLACK, &inChess);
+            writeBoard(board, inChess.x, inChess.y, BLACK);
+            UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
+            step[stepCount] = (Chess){inChess.x + 7, -1 * inChess.y + 7, BLACK};
             stepCount++;
             if (CheckWin(board))
             {
@@ -944,14 +943,14 @@ void Game_Start()
     bool stopflag = false;
     if (isAI && nbw == 1)
     {
-        int depth = 3;
-        Chess inChess = {lastX, lastY, BLACK};
-        Node root = DFS(board, inChess, depth);
-        writeBoard(board, root.chess.x, root.chess.y, BLACK);
-        step[stepCount] = (Chess){root.chess.x + 7, -1 * root.chess.y + 7, BLACK};
+        Chess inChess;
+        int score = DFS(board, 3, BLACK, &inChess);
+        writeBoard(board, inChess.x, inChess.y, BLACK);
+        UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
+        step[stepCount] = (Chess){inChess.x + 7, -1 * inChess.y + 7, BLACK};
         stepCount++;
         nbw = 2;
-        UpdateChessBoard(board, root.chess.x + 7, -1 * root.chess.y + 7);
+        UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
     }
     while (!stopflag)
     {

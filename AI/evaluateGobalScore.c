@@ -6,7 +6,7 @@
  * @param self_type 己方棋子颜色
  * @return 评估得分
  */
-int evaluateGobalScore(const int board[15][15], const Type self_type)
+int evaluateGobalScore(int **board, const Type self_type)
 {
     if (NULL == board)
     {

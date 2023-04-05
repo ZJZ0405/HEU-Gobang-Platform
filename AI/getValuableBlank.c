@@ -6,7 +6,7 @@
  * @param chess 接收棋子列表
  * @param length 接收棋子数量
  */
-void getValuableBlank(int board[15][15], Chess *chess, int *length)
+void getValuableBlank(int **board, Chess *chess, int *length)
 {
      int count = 0;
      for (int x = -7; x < 7; x++)

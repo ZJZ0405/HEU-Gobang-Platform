@@ -145,7 +145,7 @@ int evaluateScore(const int board[15][15], const Type self_type, const Chess *in
  * @param chess 接收棋子列表
  * @param length 接收棋子数量
  */
-int getValuableBlank(int **board, Chess *chess, int *length);
+void getValuableBlank(int **board, Chess *chess, int *length);
 
 /**
  * @brief DFS节点
@@ -164,4 +164,4 @@ typedef struct
  * @param board[15][15] 棋盘
  * @param deepth 搜索深度
 */
-Node DFS(int **board, Chess chess,int deepth);
+int DFS(int **board, int deepth, Type type, Chess *next_chess);
