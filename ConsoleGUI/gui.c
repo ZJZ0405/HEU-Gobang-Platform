@@ -33,6 +33,8 @@ Chess *step;
 int stepCount;
 /// @brief 是否在AI模式
 bool isAI = false;
+/// @brief AI模式下玩家得分
+int score = 0;
 /// @brief 玩家1名称
 wchar_t *player1;
 /// @brief 玩家2名称（AI模式中为AI名称）
@@ -431,6 +433,13 @@ void DrawBattlePanel(int highLightPlayer)
     Console_Print_Prefix(L"黑子玩家", defaultColor, x + 2, y + 4);
     Console_Print_Prefix(player1, highLightPlayer == 2 ? (struct Color){240, 200, 183} : defaultColor, x + 2, y + 2);
     Console_Print_Prefix(player2, highLightPlayer == 1 ? (struct Color){240, 200, 183} : defaultColor, x + 2, y + 5);
+    if (isAI)
+    {
+        Console_Print_Prefix(L"AI得分", defaultColor, x + 2, y + 7);
+        wchar_t scores[10];
+        _itow(score, scores, 10);
+        Console_Print_Prefix(scores, defaultColor, battlePanelX + 2, battlePanelY + 8);
+    }
     // 绘制认输与悔棋按钮，位于玩家信息窗口内，按钮至少三格高，十二格宽，水平居中，按钮内文字也水平居中
     int buttonWidth = 12, buttonHeight = 3;
     int buttonX = (width - buttonWidth) / 2 + x, buttonY = (height - buttonHeight) / 2 + y;
@@ -501,6 +510,13 @@ void UpdateBattlePanel(int highLightPlayer)
 {
     Console_Print_Prefix(player1, highLightPlayer == 1 ? (struct Color){240, 200, 183} : defaultColor, battlePanelX + 2, battlePanelY + 2);
     Console_Print_Prefix(player2, highLightPlayer == 2 ? (struct Color){240, 200, 183} : defaultColor, battlePanelX + 2, battlePanelY + 5);
+    // 打印分数，使用全局变量score
+    wchar_t scores[10];
+    _itow(score, scores, 10);
+    if (isAI)
+    {
+        Console_Print_Prefix(scores, defaultColor, battlePanelX + 2, battlePanelY + 8);
+    }
 }
 /**
  * @brief 绘制标题
@@ -777,7 +793,7 @@ void GetMouseInput(int **board, bool *stopflag)
         if (isAI)
         {
             Chess inChess;
-            int score = DFS(board, 2, BLACK, &inChess);
+            score = DFS(board, 2, BLACK, &inChess);
             writeBoard(board, inChess.x, inChess.y, BLACK);
             UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
             step[stepCount] = (Chess){inChess.x + 7, -1 * inChess.y + 7, BLACK};
@@ -944,7 +960,7 @@ void Game_Start()
     if (isAI && nbw == 1)
     {
         Chess inChess;
-        int score = DFS(board, 2, BLACK, &inChess);
+        int score = DFS(board, 4, BLACK, &inChess);
         writeBoard(board, inChess.x, inChess.y, BLACK);
         UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
         step[stepCount] = (Chess){inChess.x + 7, -1 * inChess.y + 7, BLACK};
