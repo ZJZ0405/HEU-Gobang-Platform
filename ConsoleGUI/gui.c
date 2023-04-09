@@ -182,7 +182,7 @@ void Console_Print_Prefix(wchar_t *str, struct Color color, int x, int y) // x,y
 void DrawChess(int x, int y, int bw)
 {
     wchar_t *chess = L"●";
-    Console_Print_Prefix(chess, bw == 2 ? (struct Color){255, 255, 255} /*colors[y - chessBoardY]*/ : (struct Color){30, 30, 30}, x, y);
+    Console_Print_Prefix(chess, bw == -1 ? (struct Color){255, 255, 255} /*colors[y - chessBoardY]*/ : (struct Color){30, 30, 30}, x, y);
 }
 /**
  * @brief 画棋盘
@@ -740,7 +740,7 @@ void GetMouseInput(int **board, bool *stopflag)
         if (DrawSurrenderConfirmDialog())
         {
             *stopflag = true;
-            DrawWinnerDialog(nbw == 1 ? 2 : 1);
+            DrawWinnerDialog(nbw == 1 ? -1 : 1);
         }
         else
         {
@@ -788,7 +788,7 @@ void GetMouseInput(int **board, bool *stopflag)
         }
 
         // 让正在下棋的一方的名字高亮显示，即将下棋的一方的名字变为红色
-        nbw = ((nbw == 1) ? 2 : 1);
+        nbw = ((nbw == 1) ? -1 : 1);
         UpdateBattlePanel(nbw);
         if (isAI)
         {
@@ -803,7 +803,7 @@ void GetMouseInput(int **board, bool *stopflag)
                 *stopflag = true;
                 DrawWinnerDialog(nbw);
             }
-            nbw = nbw == 1 ? 2 : 1;
+            nbw = nbw == 1 ? -1 : 1;
             UpdateBattlePanel(nbw);
             // DrawChessBoard(bufferSize.X * 0.25, 0, bufferSize.X, bufferSize.Y, board);
         }
@@ -864,7 +864,7 @@ void Regret(int **board)
         stepCount--;
         board[step[stepCount].y][step[stepCount].x] = 0;
         // board[lastY][lastX] = 0;
-        nbw = nbw == 1 ? 2 : 1;
+        nbw = nbw == 1 ? -1 : 1;
         DrawChessBoard(bufferSize.X * 0.25, 0, bufferSize.X, bufferSize.Y, board);
         if (stepCount)
             UpdateChessBoard(board, step[stepCount - 1].x, step[stepCount - 1].y);
@@ -876,7 +876,7 @@ void Regret(int **board)
             stepCount--;
             board[step[stepCount].y][step[stepCount].x] = 0;
             // board[lastY][lastX] = 0;
-            nbw = nbw == 1 ? 2 : 1;
+            nbw = nbw == 1 ? -1 : 1;
             DrawChessBoard(bufferSize.X * 0.25, 0, bufferSize.X, bufferSize.Y, board);
             if (stepCount)
                 UpdateChessBoard(board, step[stepCount - 1].x, step[stepCount - 1].y);
@@ -919,7 +919,7 @@ LABEL1:
     int y1 = coordScreen.Y;
     if (x1 >= x + width / 2 - 4 && x1 <= x + width / 2 + 4 && y1 == y + height / 2 - 1)
     {
-        bw = 2;
+        bw = -1;
     }
     else if (x1 >= x + width / 2 - 4 && x1 <= x + width / 2 + 4 && y1 == y + height / 2)
     {
@@ -965,7 +965,7 @@ void Game_Start()
         UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
         step[stepCount] = (Chess){inChess.x + 7, -1 * inChess.y + 7, BLACK};
         stepCount++;
-        nbw = 2;
+        nbw = -1;
         UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
     }
     while (!stopflag)

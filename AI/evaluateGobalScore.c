@@ -1,4 +1,5 @@
 #include "base.h"
+#include <limits.h>
 
 /**
  * @brief 评估当前全局分数
@@ -6,7 +7,7 @@
  * @param self_type 己方棋子颜色
  * @return 评估得分
  */
-int evaluateGobalScore(int **board, const Type self_type)
+int evaluateGobalScore(const int** board, const Type self_type)
 {
     if (NULL == board)
     {
@@ -93,24 +94,16 @@ int evaluateGobalScore(int **board, const Type self_type)
         }
     }
 
-    // if (1 <= self.con_five)
-    // {
-    //     return -1;
-    // }
-    // else if (1 <= enemy.con_five)
-    // {
-    //     return -2;
-    // }
-    int output = self.con_five * 1000000
+    int output = self.con_five * 100000
                  +self.active_four * 10000
                  +self.active_three * 1000
                  +self.active_two * 100
-                 +self.active_one *10
+                 +self.active_one * 10
                  +self.inactive_four * 1000
                  +self.inactive_three * 100
                  +self.inactive_two * 10
                  
-                 -enemy.con_five * 1000000
+                 -enemy.con_five * 100000
                  -enemy.active_four * 10000
                  -enemy.active_three * 1000
                  -enemy.active_two * 100

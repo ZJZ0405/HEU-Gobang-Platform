@@ -1,4 +1,4 @@
-#include "base.h"
+#include "../base.h"
 #include <limits.h>
 
 /**
@@ -8,11 +8,11 @@
  * @param type 己方阵营
  * @return 分数
 */
-int DFS(int **board, int deepth, Type type, Chess *next_chess)
+int DFS(int** board, int deepth, Type type, Chess *next_chess)
 {
     if (0 == deepth)
     {
-        return evaluateGobalScore(board, type);
+        return evaluateGobalScore((const int**)board, type);
     }
     else
     {
