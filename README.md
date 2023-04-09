@@ -5,7 +5,11 @@ HEU Gobang Platform
 # 技术特性
 ## ConsoleGUI
 ### 8-bit Color Windows Command Line Host
-![image](https://user-images.githubusercontent.com/36219016/230759360-75979914-d5f3-4b2f-a9e6-acbe2fe83420.png)
+| Conventional | Our Solution |
+|--|--|
+| <img src="https://user-images.githubusercontent.com/36219016/230775519-656c54e3-bac7-4e0c-aa59-d02639820205.png"> | <img src="https://user-images.githubusercontent.com/36219016/230775522-db09bfe2-b7d0-453d-b796-5e11a0ca0c87.png"> |
+| 1-Bit RGBW | 8-Bit RGB |
+| 2^4 Colors | 2^24 Colors |
 
 #### Foreground Color Implementation:
 ```c
@@ -36,7 +40,13 @@ void MapColorTable()
     SetConsoleScreenBufferInfoEx(hOut, &csbiex);
 }
 ```
-![image](https://user-images.githubusercontent.com/36219016/230759404-d4fbf8dd-8d60-4a92-a252-0373f76d5f4d.png)
+#### Why we need this feature?
+To colorize chessboard 
+
+To make the chesses easier to see(highlighting)
+
+![image](https://user-images.githubusercontent.com/36219016/230775739-b9264efd-b3c3-47c9-9d9b-16e47329a390.png)
+
 ### Blink-proof Render Algorithm
 Since __double buffering__ conflicts with colorful output, we designed a new algorithm to ensure that the same pixel is written only once every time a buffer write operation is performed.
 | Without Algorithm | With Algoithm |
@@ -44,7 +54,12 @@ Since __double buffering__ conflicts with colorful output, we designed a new alg
 | <img src="https://github.com/ZJZ0405/CSMind/blob/develop/static/2023-04-08%2022-45-05%2000_00_18-00_00_21~1.gif"> | <img src="https://github.com/ZJZ0405/CSMind/blob/develop/static/2023-04-08%2022-45-05%2000_00_18-00_00_21.gif"> |
 
 ### Adaptive DPI Rendering  
-![image](https://user-images.githubusercontent.com/36219016/230759430-8c8ac13f-5668-43ec-8afa-ca8bc72b9470.png)
+| Font Size = 14 | Font Size = 24 | Font Size = 36 |
+|--|--|--|
+| <img src="https://user-images.githubusercontent.com/36219016/230775867-e1c9663b-6982-46e0-b719-437b8d205475.png"> | <img src="https://user-images.githubusercontent.com/36219016/230775870-5863197c-872c-45b0-9c55-bd50a3a72a81.png"> | <img src="https://user-images.githubusercontent.com/36219016/230775872-d81a71a8-9465-41a3-9775-571252bd6b65.png"> |
+
+Use percentages whenever possible to position controls and scale controls by integer multiples
+
 ### Interactive system logic based on message queue
 The UI asks the console buffer for input events through a loop, and comprehensively handles them.
 We can receive mouse and keyboard events by this function:
