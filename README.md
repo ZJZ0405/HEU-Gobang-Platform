@@ -4,13 +4,81 @@
 HEU Gobang Platform
 # 技术特性
 ## ConsoleGUI
-### 8-bit色彩 Windows Command Line Host
-采用wprintf的特殊输出前缀实现Foreground全彩输出
-通过更改CONSOLE_SCREEN_BUFFER_INFO_EX中的ColorTable实现Background全彩输出
-### 棋盘无极DPI
-通过测量传入的屏幕大小参数自动更改棋盘渲染大小
-### 基于输入-输出循环的交互系统
+### 8-bit Color Windows Command Line Host
+![image](https://user-images.githubusercontent.com/36219016/230759360-75979914-d5f3-4b2f-a9e6-acbe2fe83420.png)
 
+#### Foreground Color Implementation:
+```c
+  struct Color // 颜色结构体
+  {
+      int r,g,b;
+  };
+  wchar_t *outputFormatPrefix = L“\x1b[38;2;%d;%d;%dm”; // 更改颜色使用的输出前缀
+  void Console_Print(wchar_t *str, struct Color color) // 输出彩色字符串
+  {
+      wprintf(outputFormatPrefix, color.r, color.g, color.b); // 更改颜色
+      DWORD ws;
+      WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE), str, wcslen(str), &ws, NULL); // 输出字符串
+  }
+```
+Use _wchar_t_ (wide char type) to avoid UTF-8 encoding garbled characters
+
+#### Background Color Implementation:
+```c
+void MapColorTable()
+{
+    CONSOLE_SCREEN_BUFFER_INFOEX csbiex;
+    csbiex.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfoEx(hOut, &csbiex);
+    csbiex.ColorTable[0] = RGB(41, 97, 136);   // 替代黑色
+    csbiex.ColorTable[1] = RGB(240, 200, 183); // 替代白色，强调色
+    SetConsoleScreenBufferInfoEx(hOut, &csbiex);
+}
+```
+![image](https://user-images.githubusercontent.com/36219016/230759404-d4fbf8dd-8d60-4a92-a252-0373f76d5f4d.png)
+### Blink-proof Render Algorithm
+Since __double buffering__ conflicts with colorful output, we designed a new algorithm to ensure that the same pixel is written only once every time a buffer write operation is performed.
+| Without Algorithm | With Algoithm |
+|--|--|
+| <img src="https://github.com/ZJZ0405/CSMind/blob/develop/static/2023-04-08%2022-45-05%2000_00_18-00_00_21~1.gif"> | <img src="https://github.com/ZJZ0405/CSMind/blob/develop/static/2023-04-08%2022-45-05%2000_00_18-00_00_21.gif"> |
+
+### Adaptive DPI Rendering  
+![image](https://user-images.githubusercontent.com/36219016/230759430-8c8ac13f-5668-43ec-8afa-ca8bc72b9470.png)
+### Interactive system logic based on message queue
+The UI asks the console buffer for input events through a loop, and comprehensively handles them.
+We can receive mouse and keyboard events by this function:
+```c
+BOOL WINAPI ReadConsoleInput(
+  _In_  HANDLE        hConsoleInput,
+  _Out_ PINPUT_RECORD lpBuffer,
+  _In_  DWORD         nLength,
+  _Out_ LPDWORD       lpNumberOfEventsRead
+);
+
+typedef struct _INPUT_RECORD {
+  WORD  EventType;
+  union {
+    KEY_EVENT_RECORD          KeyEvent;
+    MOUSE_EVENT_RECORD        MouseEvent;
+    WINDOW_BUFFER_SIZE_RECORD WindowBufferSizeEvent;
+    MENU_EVENT_RECORD         MenuEvent;
+    FOCUS_EVENT_RECORD        FocusEvent;
+  } Event;
+} INPUT_RECORD;
+```
+Example of _waiting for left click_
+```c
+// 获取鼠标输入
+    INPUT_RECORD inRec;
+    DWORD res;
+    HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE); /* 获取标准输入设备句柄*/
+LABEL1:
+    do
+    {
+        ReadConsoleInputW(hInput, &inRec, 1, &res);
+    } while (inRec.Event.MouseEvent.dwButtonState != FROM_LEFT_1ST_BUTTON_PRESSED);
+```
 # 提交规范
 
 本规范基于[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)制定
