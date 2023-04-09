@@ -13,14 +13,14 @@ void getValuableBlank(int **board, Chess *chess, int *length)
      {
          for (int y = -7; y < 7; y++)
          {
-             if (EMPTY == readBoard(board, x, y))
+             if (EMPTY == readBoard((const int**)board, x, y))
              {
                  for (int _x = x - 2; _x <= x + 2 && _x >= -7 && _x <= 7; _x++)
                  {
                      for (int _y = y - 2; _y <= y + 2 && _y >= -7 && _y <= 7; _y++)
                      {
                          
-                        if (EMPTY != readBoard(board, _x, _y))
+                        if (EMPTY != readBoard((const int**)board, _x, _y))
                         {
                             (chess+count)->x = x;
                             (chess+count)->y = y;
