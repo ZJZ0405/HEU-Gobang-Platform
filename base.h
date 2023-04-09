@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
-
+#include <malloc/malloc.h>
+#include <stdlib.h>
 /**
  * @param BLACK 黑棋
  * @param WHITE 白棋
@@ -9,7 +10,7 @@
 typedef enum
 {
     BLACK = 1, // 黑棋
-    WHITE = 2, // 白棋
+    WHITE = -1, // 白棋
     EMPTY = 0  // 空
 } Type;
 
@@ -82,7 +83,7 @@ typedef struct
  * @param in 当前敌方落子位置
  * @param out 己方落子位置
  */
-void ProcessNext(const int board[15][15], Type self_type, Chess *in, Chess *out);
+void ProcessNext(const int** board, Type self_type, Chess *in, Chess *out);
 
 /**
  * @brief 读取棋盘中数据
@@ -91,8 +92,20 @@ void ProcessNext(const int board[15][15], Type self_type, Chess *in, Chess *out)
  * @param y
  * @return 该坐标下棋盘上棋子的类型
  */
-Type readBoard(int **board, const int x, const int y);
-
+static inline Type readBoard(const int** board, const int x, const int y)
+{
+    if (NULL == board)
+    {
+        printf("ERROR - board of point is NULL!");
+        return -1;
+    }
+    if (x < -7 || x > 7 || y < -7 || y > 7)
+    {
+        printf("ERROR - point is not in board");
+        return -2;
+    }
+    return *((int *)board + 15 * (7 - y) + x + 7);
+}
 /**
  * @brief 写入数据到棋盘
  * @param board[15][15] 棋盘
@@ -101,8 +114,22 @@ Type readBoard(int **board, const int x, const int y);
  * @param type 种类
  * @return 是否成功写入
  */
-bool writeBoard(int **board, const int x, const int y, Type type);
+static inline bool writeBoard(int** board, const int x, const int y, Type type)
+{
+    if (NULL == board)
+    {
+        printf("ERROR - board of point is NULL!");
+        return false;
+    }
+    if (x < -7 || x > 7 || y < -7 || y > 7)
+    {
+        printf("ERROR - point is not in board");
+        return false;
+    }
+    *((int *)board + 15 * (7 - y) + x + 7) = type;
 
+    return true;
+}
 /**
  * @brief 判断连子类型
  * @param length 长度
@@ -128,7 +155,7 @@ void countUnit(const int array[], const int array_lenght, const Type self_type, 
  * @param self_type 己方棋子颜色
  * @return 评估得分
  */
-int evaluateGobalScore(int** board, const Type self_type);
+int evaluateGobalScore(const int** board, const Type self_type);
 
 /**
  * @brief 评估当前单步分数
@@ -137,7 +164,7 @@ int evaluateGobalScore(int** board, const Type self_type);
  * @param in 新加入的步骤
  * @return 评估得分
  */
-int evaluateScore(const int board[15][15], const Type self_type, const Chess *in);
+int evaluateScore(const int** board, const Type self_type, const Chess *in);
 
 /**
  * @brief 找出棋盘中距离棋子距离小于等于2的所有空位，并通过chess数组传出，chess数组的长度为length
@@ -145,7 +172,7 @@ int evaluateScore(const int board[15][15], const Type self_type, const Chess *in
  * @param chess 接收棋子列表
  * @param length 接收棋子数量
  */
-void getValuableBlank(int **board, Chess *chess, int *length);
+void getValuableBlank(int** board, Chess *chess, int *length);
 
 /**
  * @brief DFS节点
@@ -161,7 +188,10 @@ typedef struct
 
 /**
  * @brief 深度优先搜索，寻找落子位置
- * @param board[15][15] 棋盘
+ * @param board[15][15] 棋盘,请传入棋盘深拷贝副本
  * @param deepth 搜索深度
+ * @param type 己方阵营
+ * @return 分数
 */
-int DFS(int **board, int deepth, Type type, Chess *next_chess);
+int DFS(int** board, int deepth, Type type, Chess *next_chess);
+
