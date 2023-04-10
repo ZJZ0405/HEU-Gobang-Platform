@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -20,7 +21,7 @@ void ProcessNext(const int **board, Type self_type, Chess *in, Chess *out);
  * @version 1.0.0
  * @author ZJZ
 */
-void a(int);
+void InitAAi(int** borad, const int* step);
 
 /**
  * @brief 读取棋盘中数据
