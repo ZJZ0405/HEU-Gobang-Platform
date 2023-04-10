@@ -1,13 +1,4 @@
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <conio.h>
-#include <string.h>
-#include <locale.h>
-#include <stdbool.h>
-#include <fcntl.h>
-#include <io.h>
-#include <time.h>
+#include "gui.h"
 #include "../base.h"
 
 #pragma execution_character_set("utf-8")
@@ -1157,16 +1148,4 @@ void Print_Grandient_Logo()
     {
         Console_Print_Prefix(logo[i], gradient[i], bufferSize.X * 0.1, (bufferSize.Y - 24) / 2 + i);
     }
-}
-
-int main()
-{
-    Initialize_Console();
-    ReadNameFile();
-    MapColorTable();
-    full_screen();
-    ClearScreen();
-    player1 = (wchar_t *)malloc(sizeof(wchar_t) * 20);
-    player2 = (wchar_t *)malloc(sizeof(wchar_t) * 20);
-    Print_Logo();
 }
