@@ -54,3 +54,6 @@ dkms.conf
 .vscode/tasks.json
 ConsoleGUI/first.names
 ConsoleGUI/last.names
+
+# Add
+.DS_Store
