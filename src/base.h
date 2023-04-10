@@ -1,4 +1,3 @@
-#pragma once
 /**
  * @param BLACK 黑棋
  * @param WHITE 白棋
