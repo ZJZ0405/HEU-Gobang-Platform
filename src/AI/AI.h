@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "../base.h"
 
+
+
 /**
  * @brief 封装函数
  * @version 0.1.0
@@ -12,6 +14,13 @@
  * @param out 己方落子位置
  */
 void ProcessNext(const int **board, Type self_type, Chess *in, Chess *out);
+
+/**
+ * @brief 封装
+ * @version 1.0.0
+ * @author ZJZ
+*/
+void a(int);
 
 /**
  * @brief 读取棋盘中数据
@@ -77,15 +86,6 @@ void countUnit(const int array[], const int array_lenght, const Type self_type, 
 int evaluateGobalScore(const int **board, const Type self_type);
 
 /**
- * @brief 评估当前单步分数
- * @param board[15][15] 当前棋盘
- * @param self_type 己方棋子颜色
- * @param in 新加入的步骤
- * @return 评估得分
- */
-int evaluateScore(const int **board, const Type self_type, const Chess *in);
-
-/**
  * @brief 找出棋盘中距离棋子距离小于等于2的所有空位，并通过chess数组传出，chess数组的长度为length
  * @param board[15][15] 棋盘
  * @param chess 接收棋子列表
@@ -109,6 +109,7 @@ typedef struct
  * @param board[15][15] 棋盘,请传入棋盘深拷贝副本
  * @param deepth 搜索深度
  * @param type 己方阵营
+ * @param next_chess 最优棋子位置
  * @return 分数
  */
 int DFS(int **board, int deepth, Type type, Chess *next_chess);

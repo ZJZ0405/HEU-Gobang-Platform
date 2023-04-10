@@ -5,8 +5,9 @@
  * @param board[15][15] 棋盘,请传入棋盘深拷贝副本
  * @param deepth 搜索深度
  * @param type 己方阵营
+ * @param next_chess 最优棋子位置
  * @return 分数
-*/
+ */
 int DFS(int** board, int deepth, Type type, Chess *next_chess)
 {
     if (0 == deepth)
@@ -18,14 +19,14 @@ int DFS(int** board, int deepth, Type type, Chess *next_chess)
         int _deepth = deepth - 1; //深度增加
         int length = 0;
         Chess chesses[225] = {0};
-        getValuableBlank(board, chesses, &length); //落子位置集合
+        getValuableBlank((const int**)board, chesses, &length); //落子位置集合
 
         writeBoard(board, chesses[0].x, chesses[0].y, type);
         Chess _next_chess = {0};
         int max_sorce = DFS(board, _deepth, type*(-1), &_next_chess);
         max_sorce *= (-1);
         writeBoard(board, chesses[0].x, chesses[0].y, EMPTY);
-        
+
         int tag = 0;
         for (int i = 1; i < length; i++)
         {
