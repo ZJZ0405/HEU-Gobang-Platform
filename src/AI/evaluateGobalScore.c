@@ -13,7 +13,7 @@ int evaluateGobalScore(const int** board, const Type self_type)
         printf("ERROR - board of point is NULL!");
         return -1;
     }
-    const Type ENEMY_COLOR = (BLACK == self_type) ? WHITE : BLACK; //敌人
+    const Type ENEMY_COLOR = (-1)*self_type; //敌人
     
     Count self = {0};
     Count enemy = {0};
