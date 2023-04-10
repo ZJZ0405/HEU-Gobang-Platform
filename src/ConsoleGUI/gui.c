@@ -1,14 +1,6 @@
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <conio.h>
-#include <string.h>
-#include <locale.h>
-#include <stdbool.h>
-#include <fcntl.h>
-#include <io.h>
-#include <time.h>
-#include "base.h"
+#include "gui.h"
+#include "../AI/AI.h"
+#include "../base.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -121,6 +113,8 @@ void GetGrandientColorArray(struct Color *colors, int length) // 获取渐变色
  */
 DWORD Initialize_Console() // 初始化控制台，设置编码为UTF-8，设置标题，设置输出颜色
 {
+    player1 = (wchar_t *)calloc(20,sizeof(wchar_t));
+    player2 = (wchar_t *)calloc(20,sizeof(wchar_t));
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hOut == INVALID_HANDLE_VALUE)
         return GetLastError();
@@ -960,7 +954,7 @@ void Game_Start()
     if (isAI && nbw == 1)
     {
         Chess inChess;
-        int score = DFS(board, 4, BLACK, &inChess);
+        int score = DFS(board, 2, BLACK, &inChess);
         writeBoard(board, inChess.x, inChess.y, BLACK);
         UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
         step[stepCount] = (Chess){inChess.x + 7, -1 * inChess.y + 7, BLACK};
@@ -1173,16 +1167,4 @@ void Print_Grandient_Logo()
     {
         Console_Print_Prefix(logo[i], gradient[i], bufferSize.X * 0.1, (bufferSize.Y - 24) / 2 + i);
     }
-}
-
-int main()
-{
-    Initialize_Console();
-    ReadNameFile();
-    MapColorTable();
-    full_screen();
-    ClearScreen();
-    player1 = (wchar_t *)malloc(sizeof(wchar_t) * 20);
-    player2 = (wchar_t *)malloc(sizeof(wchar_t) * 20);
-    Print_Logo();
 }
