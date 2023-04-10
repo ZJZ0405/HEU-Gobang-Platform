@@ -9,3 +9,11 @@
 #include <io.h>
 #include <time.h>
 
+//export function in gui.c
+DWORD Initialize_Console();
+void ReadNameFile();
+void MapColorTable();
+void full_screen();
+void ClearScreen();
+void Print_Logo();
+
