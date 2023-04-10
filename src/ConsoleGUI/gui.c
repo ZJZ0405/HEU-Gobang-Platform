@@ -113,6 +113,8 @@ void GetGrandientColorArray(struct Color *colors, int length) // 获取渐变色
  */
 DWORD Initialize_Console() // 初始化控制台，设置编码为UTF-8，设置标题，设置输出颜色
 {
+    player1 = (wchar_t *)calloc(20,sizeof(wchar_t));
+    player2 = (wchar_t *)calloc(20,sizeof(wchar_t));
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hOut == INVALID_HANDLE_VALUE)
         return GetLastError();
@@ -952,7 +954,7 @@ void Game_Start()
     if (isAI && nbw == 1)
     {
         Chess inChess;
-        int score = DFS(board, 4, BLACK, &inChess);
+        int score = DFS(board, 2, BLACK, &inChess);
         writeBoard(board, inChess.x, inChess.y, BLACK);
         UpdateChessBoard(board, inChess.x + 7, -1 * inChess.y + 7);
         step[stepCount] = (Chess){inChess.x + 7, -1 * inChess.y + 7, BLACK};
