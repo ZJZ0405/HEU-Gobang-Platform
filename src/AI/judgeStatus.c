@@ -1,4 +1,4 @@
-#include "base.h"
+#include "AI.h"
 
 /**
  * @brief 判断连子类型

@@ -1,5 +1,4 @@
-#include "base.h"
-#include <limits.h>
+#include "AI.h"
 
 /**
  * @brief 评估当前全局分数

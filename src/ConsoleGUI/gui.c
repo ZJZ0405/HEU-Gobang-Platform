@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <io.h>
 #include <time.h>
-#include "base.h"
+#include "../base.h"
 
 #pragma execution_character_set("utf-8")
 
