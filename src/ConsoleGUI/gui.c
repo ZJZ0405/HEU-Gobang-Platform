@@ -1,4 +1,5 @@
 #include "gui.h"
+#include "../AI/AI.h"
 #include "../base.h"
 
 #pragma execution_character_set("utf-8")
