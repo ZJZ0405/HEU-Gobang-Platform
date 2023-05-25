@@ -1,4 +1,5 @@
 #pragma once
+#include <stdbool.h>
 /**
  * @param BLACK 黑棋
  * @param WHITE 白棋
@@ -72,3 +73,43 @@ typedef struct
     int inactive_two;
 } Count;
 
+static inline Type readBoard(const int **board, const int x, const int y)
+{
+    if (NULL == board)
+    {
+        printf("fuck1\n");
+        return -1;
+    }
+    else if (x < -7 || x > 7 || y < -7 || y > 7)
+    {
+        printf("fuck2\n");
+        return -1;
+    }
+    
+    // fix capability to separate array
+    return (Type)(board[-1 * y + 7][x + 7]);
+}
+/**
+ * @brief 写入数据到棋盘
+ * @param board[15][15] 棋盘
+ * @param x x
+ * @param y y
+ * @param type 种类
+ * @return 是否成功写入
+ */
+static inline bool writeBoard(int **board, const int x, const int y, Type type)
+{
+    if (NULL == board)
+    {
+        return false;
+    }
+    if (x < -7 || x > 7 || y < -7 || y > 7)
+    {
+        return false;
+    }
+
+    // fix capability to separate array
+    board[-1 * y + 7][x + 7] = type;
+
+    return true;
+}

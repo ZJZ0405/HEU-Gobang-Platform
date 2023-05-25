@@ -57,3 +57,4 @@ ConsoleGUI/last.names
 
 # Add
 .DS_Store
+build/*

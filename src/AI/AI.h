@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include "../base.h"
 
-
-
 /**
  * @brief 封装函数
  * @version 0.1.0
@@ -21,7 +19,7 @@ void ProcessNext(const int **board, Type self_type, Chess *in, Chess *out);
  * @version 1.0.0
  * @author ZJZ
 */
-void InitAAi(int** borad, const int* step);
+void InitAi(int** borad, const int* step);
 
 /**
  * @brief 读取棋盘中数据
@@ -30,35 +28,7 @@ void InitAAi(int** borad, const int* step);
  * @param y
  * @return 该坐标下棋盘上棋子的类型
  */
-static inline Type readBoard(const int **board, const int x, const int y)
-{
-    // fix capability to separate array
-    return (Type)board[-1 * y + 7][x + 7];
-}
-/**
- * @brief 写入数据到棋盘
- * @param board[15][15] 棋盘
- * @param x x
- * @param y y
- * @param type 种类
- * @return 是否成功写入
- */
-static inline bool writeBoard(int **board, const int x, const int y, Type type)
-{
-    if (NULL == board)
-    {
-        return false;
-    }
-    if (x < -7 || x > 7 || y < -7 || y > 7)
-    {
-        return false;
-    }
 
-    // fix capability to separate array
-    board[-1 * y + 7][x + 7] = type;
-
-    return true;
-}
 /**
  * @brief 判断连子类型
  * @param length 长度
