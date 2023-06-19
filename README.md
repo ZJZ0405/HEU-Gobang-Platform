@@ -1,7 +1,4 @@
-# CSMind
-计算思维
-# 项目名
-HEU Gobang Platform
+# HEU Gobang Platform
 # 技术特性
 ## ConsoleGUI
 ### 8-bit Color Windows Command Line Host
